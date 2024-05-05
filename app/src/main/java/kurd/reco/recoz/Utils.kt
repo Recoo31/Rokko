@@ -7,6 +7,11 @@ import com.lagradost.nicehttp.Requests
 import com.lagradost.nicehttp.ResponseParser
 import kotlin.reflect.KClass
 
+sealed class Resource<out T> {
+    data class Success<out T>(val value: T) : Resource<T>()
+    data class Failure(val error: String) : Resource<Nothing>()
+    class Loading : Resource<Nothing>()
+}
 
 var app = Requests(responseParser = object : ResponseParser {
     val mapper: ObjectMapper = jacksonObjectMapper().configure(
