@@ -77,12 +77,12 @@ dependencies {
     implementation(libs.jackson.module.kotlin)
 
     // Image Loading
-    implementation(libs.glide.compose)
+    implementation(libs.landscapist.glide)
 
     // Koin for Android
     implementation(libs.koin.androidx.compose)
 
     // Navigation
-    implementation("io.github.raamcosta.compose-destinations:core:2.1.0-beta03")
-    ksp("io.github.raamcosta.compose-destinations:ksp:2.1.0-beta03")
+    implementation(libs.destinations.core)
+    ksp(libs.destinations.ksp)
 }

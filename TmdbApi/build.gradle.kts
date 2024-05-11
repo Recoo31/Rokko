@@ -20,6 +20,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        multiDexEnabled = false
     }
 
     buildTypes {
@@ -46,7 +48,7 @@ android {
 
             project.copy {
                 from(zipTree(extLoc)) {
-                    exclude("**/R.txt", "**/proguard.txt", "**/META-INF/**")
+                    exclude("**/R.txt", "**/proguard.txt", "**/AndroidManifest.xml","**/META-INF/**")
                 }
                 into(buildFolder)
             }
@@ -59,7 +61,7 @@ android {
                 commandLine(listArgs)
             }
 
-            val manifest = file("${buildPath}AndroidManifest.xml")
+            val manifest = file(project.projectDir.absolutePath + "/src/main/manifest.json")
             if (manifest.exists()) {
                 val extension = "${buildPath}${project.projectDir.name}.zip"
                 FileInputStream(extension).use { fis ->
@@ -79,7 +81,7 @@ android {
                             val buffer = ByteArray(4096)
                             var bytesRead: Int
                             FileInputStream(manifest).use { input ->
-                                entry = ZipEntry("AndroidManifest.xml")
+                                entry = ZipEntry(manifest.name)
                                 zOut.putNextEntry(entry)
                                 while (input.read(buffer).also { bytesRead = it } != -1) {
                                     zOut.write(buffer, 0, bytesRead)
