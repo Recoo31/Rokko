@@ -23,7 +23,15 @@ class PluginManager(private val context: Context) {
     private var pluginInstance: RemoteRepo? = null
 
     init {
-        loadLastSelectedPlugin()
+        val update = checkUpdate()
+        if (!update) {
+            loadLastSelectedPlugin()
+        }
+    }
+
+
+    fun checkUpdate(): Boolean {
+        return false
     }
 
     fun addPlugin(plugin: Plugin) {

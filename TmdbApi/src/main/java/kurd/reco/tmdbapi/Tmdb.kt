@@ -3,7 +3,9 @@ package kurd.reco.tmdbapi
 import kurd.reco.recoz.Resource
 import kurd.reco.recoz.app
 import kurd.reco.recoz.data.model.DetailScreenModel
+import kurd.reco.recoz.data.model.HomeItemModel
 import kurd.reco.recoz.data.model.HomeScreenModel
+import kurd.reco.recoz.data.model.PlayDataModel
 import kurd.reco.recoz.data.model.SeriesDataModel
 import kurd.reco.recoz.data.model.SeriesItem
 import kurd.reco.recoz.data.repo.RemoteRepo
@@ -40,18 +42,14 @@ class Tmdb() : RemoteRepo {
     override suspend fun getHomeScreenItems(): Resource<List<HomeScreenModel>> {
         val movieList = mutableListOf<HomeScreenModel>()
         try {
-            val url = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&api_key=86ab4a1729081b6557bf1d959a3d4ec9"
-            val response = app.get(url = url).parsed<TmdbDataClass>()
-
-            response.results.forEach {
-                movieList.add(HomeScreenModel(it.id, "https://image.tmdb.org/t/p/w500"+it.poster_path, false))
-            }
-
-            val url2 = "https://api.themoviedb.org/3/discover/tv?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&api_key=86ab4a1729081b6557bf1d959a3d4ec9"
-            val response2 = app.get(url = url2).parsed<TmdbDataClass>()
-
-            response2.results.forEach {
-                movieList.add(HomeScreenModel(it.id, "https://image.tmdb.org/t/p/w500"+it.poster_path, true))
+            for ((url, title) in mainPage) {
+                val response = app.get(url = mainUrl + url).parsed<TmdbDataClass>()
+                val contents = mutableListOf<HomeItemModel>()
+                val isSeries = url.contains("tv")
+                for (item in response.results) {
+                    contents.add(HomeItemModel(item.id, "https://image.tmdb.org/t/p/w500"+item.poster_path, isSeries))
+                }
+                movieList.add(HomeScreenModel(title, contents))
             }
 
             return Resource.Success(movieList)
@@ -92,6 +90,10 @@ class Tmdb() : RemoteRepo {
         } catch (e: Throwable) {
             return Resource.Failure(e.localizedMessage ?: e.message ?: "Unknown Error")
         }
+    }
+
+    override suspend fun getUrl(id: Any): Resource<PlayDataModel> {
+        TODO("Not yet implemented")
     }
 
     private suspend fun parseSeasons(seasons: List<SeasonModel>, imdbID: Int) {

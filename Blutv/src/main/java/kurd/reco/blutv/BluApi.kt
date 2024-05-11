@@ -4,8 +4,10 @@ import android.util.Log
 import kurd.reco.recoz.Resource
 import kurd.reco.recoz.app
 import kurd.reco.recoz.data.model.DetailScreenModel
+import kurd.reco.recoz.data.model.DrmDataModel
 import kurd.reco.recoz.data.model.HomeItemModel
 import kurd.reco.recoz.data.model.HomeScreenModel
+import kurd.reco.recoz.data.model.PlayDataModel
 import kurd.reco.recoz.data.model.SeriesDataModel
 import kurd.reco.recoz.data.model.SeriesItem
 import kurd.reco.recoz.data.repo.RemoteRepo
@@ -13,9 +15,13 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 
 
-
-fun parseImage(images: List<ImageModel>, imageType: String, width: Int = 0, height: Int = 0): String {
-    val image = images.find { it.type == imageType} ?: images.firstOrNull()
+fun parseImage(
+    images: List<ImageModel>,
+    imageType: String,
+    width: Int = 0,
+    height: Int = 0
+): String {
+    val image = images.find { it.type == imageType } ?: images.firstOrNull()
     return "https://blutv-images.mncdn.com/q/t/i/bluv2/300/${width}x${height}/${image?.id}"
 }
 
@@ -36,9 +42,11 @@ class BluApi : RemoteRepo {
         val movieList = mutableListOf<HomeScreenModel>()
 
         try {
-            val url = "https://adapter.blupoint.io/api/projects/5d2dc68a92f3636930ba6466/mobile/v2/get-category"
+            val url =
+                "https://adapter.blupoint.io/api/projects/5d2dc68a92f3636930ba6466/mobile/v2/get-category"
 
-            val jsonData = "{\"contentTypes\":[\"SerieContainer\",\"MovieContainer\"],\"id\":\"60c34e66866ac31908b698fd\",\"package\":\"SVOD\",\"path\":\"/\",\"profileId\":\"5ff5763a84bdbccb076bc98e\",\"sort\":true}"
+            val jsonData =
+                "{\"contentTypes\":[\"SerieContainer\",\"MovieContainer\"],\"id\":\"60c34e66866ac31908b698fd\",\"package\":\"SVOD\",\"path\":\"/\",\"profileId\":\"5ff5763a84bdbccb076bc98e\",\"sort\":true}"
 
             val headers = mapOf(
                 "Appauthorization" to "Basic 549a90e9fbead3126851951d:yO2Mo/pWtdtJPhrr+h4HvXI4jaYtDOQ+FCARtVsYzrKU0bK4lqycChAcuG0AvPqxAfgc9PhAJE65/e2MryBG3g==",
@@ -61,6 +69,7 @@ class BluApi : RemoteRepo {
                 Log.i(TAG, "getHomeScreenItems: isSuccessful")
                 parsedResponse.forEach { item ->
                     val title = item.title
+                    if (title == "Ads") return@forEach
                     val contents = mutableListOf<HomeItemModel>()
                     item.contents.forEach {
                         val image = parseImage(it.images, ImageType.Portrait, 323, 452)
@@ -81,7 +90,10 @@ class BluApi : RemoteRepo {
         }
     }
 
-    override suspend fun getDetailScreenItems(id: Any, isSeries: Boolean): Resource<DetailScreenModel> {
+    override suspend fun getDetailScreenItems(
+        id: Any,
+        isSeries: Boolean
+    ): Resource<DetailScreenModel> {
         try {
             val url = "https://smarttv.blutv.com.tr/actions/content/getcontent"
             val headers = mapOf(
@@ -110,14 +122,46 @@ class BluApi : RemoteRepo {
             val description = parsedResponse.Description
 
             val _id = parsedResponse.Id
-            val images = "https://blutv-images.mncdn.com/q/t/i/bluv2/300/323x452/" + parsedResponse.PosterImage
-            val backImage = "https://blutv-images.mncdn.com/q/t/i/bluv2/300/1080x683/"+parsedResponse.Image
+            val images =
+                "https://blutv-images.mncdn.com/q/t/i/bluv2/300/323x452/" + parsedResponse.PosterImage
+            val backImage =
+                "https://blutv-images.mncdn.com/q/t/i/bluv2/300/1080x683/" + parsedResponse.Image
 
             if (isSeries) {
                 parseSeries(parsedResponse.Seasons)
             }
 
-            return Resource.Success(DetailScreenModel(title, description, _id, images, backImage, isSeries))
+            return Resource.Success(
+                DetailScreenModel(
+                    title,
+                    description,
+                    _id,
+                    images,
+                    backImage,
+                    isSeries
+                )
+            )
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            return Resource.Failure(e.localizedMessage ?: e.message ?: "Unknown Error")
+        }
+    }
+
+    override suspend fun getUrl(id: Any): Resource<PlayDataModel> {
+        try {
+            val url = "https://cors-proxy-jade-two.vercel.app/getlive"
+            val jsonData = "{\"id\": \"$id\"}"
+            val requestBody = jsonData.toRequestBody("application/json".toMediaTypeOrNull())
+
+            val response = app.post(url, requestBody = requestBody, headers = mapOf("Content-Type" to "application/json")).parsed<LiveItemModel>()
+
+            return Resource.Success(
+                PlayDataModel(
+                    url = response.media.source,
+                    title = response.media.title,
+                    drm = if (response.media.drm) DrmDataModel("https://wdvn.blutv.com/", null) else null
+                )
+            )
         } catch (e: Throwable) {
             e.printStackTrace()
             return Resource.Failure(e.localizedMessage ?: e.message ?: "Unknown Error")
@@ -137,7 +181,7 @@ class BluApi : RemoteRepo {
                     SeriesItem(
                         id = it.Id,
                         title = it.Title,
-                        poster = "https://blutv-images.mncdn.com/q/t/i/bluv2/300/323x452/" + it.Image,
+                        poster = "https://blutv-images.mncdn.com/q/t/i/bluv2/300/600x400/" + it.Image,
                         description = it.Description
                     )
                 }
