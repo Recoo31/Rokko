@@ -99,17 +99,23 @@ class PlayerActivity : ComponentActivity() {
 
         hideSystemBars(LocalView.current)
 
-        LaunchedEffect(Unit) {
+//        LaunchedEffect(Unit) {
+//            (context as Activity).apply {
+//                oldOrientation = requestedOrientation
+//                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+//            }
+//        }
+
+        DisposableEffect(
             (context as Activity).apply {
                 oldOrientation = requestedOrientation
                 requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             }
-        }
-
-        DisposableEffect(Unit) {
+        ) {
             onDispose {
+                println("onDispose")
                 exoPlayer.release()
-                (context as Activity).requestedOrientation = oldOrientation
+                (context).requestedOrientation = oldOrientation
             }
         }
 

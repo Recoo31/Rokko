@@ -2,6 +2,7 @@ package kurd.reco.recoz.view.detailscreen
 
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -115,68 +116,59 @@ fun DetailScreen(item: DetailScreenModel, viewModel: DetailScreenVM) {
                     }
                 }
             }
-
             context.startActivity(intent)
-
         }
         is Resource.Failure -> {
             isError = true
             errorText = resource.error
         }
         is Resource.Loading -> {
-            var isLoading by remember { mutableStateOf(false) }
+        }
+    }
 
-            if (isLoading) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    LoadingBar()
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        item {
+            BackImage(item)
+        }
+
+        item {
+            MovieDetails(item)
+        }
+
+        item {
+            DescriptionSection(
+                item = item,
+                expanded = expanded,
+                onExpandClick = { expanded = !expanded }
+            )
+        }
+        if (item.isSeries) {
+            viewModel.seriesList?.let { season ->
+                item {
+                    SeasonsSelector(season, selectedSeason) {
+                        selectedSeason = it
+                    }
                 }
+
+                items(season[selectedSeason].episodes) { episode ->
+                    SeasonItem(item = episode) {
+                        Toast.makeText(context, "Loading Video...", Toast.LENGTH_SHORT).show()
+                        viewModel.getUrl(it)
+                    }
+                }
+
             }
-
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                item {
-                    BackImage(item)
-                }
-
-                item {
-                    MovieDetails(item)
-                }
-
-                item {
-                    DescriptionSection(
-                        item = item,
-                        expanded = expanded,
-                        onExpandClick = { expanded = !expanded }
-                    )
-                }
-                if (item.isSeries) {
-                    viewModel.seriesList?.let { season ->
-                        item {
-                            SeasonsSelector(season, selectedSeason) {
-                                selectedSeason = it
-                            }
-                        }
-
-                        items(season[selectedSeason].episodes) { episode ->
-                            SeasonItem(item = episode) {
-                                isLoading = !isLoading
-                                viewModel.getUrl(it)
-                            }
-                        }
-
-                    }
-                } else {
-                    item {
-                        Button(
-                            onClick = {
-                                viewModel.getUrl(item.id)
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                        ) {
-                            Text(text = "Play", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
-                        }
-                    }
+        } else {
+            item {
+                Button(
+                    onClick = {
+                        viewModel.getUrl(item.id)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                ) {
+                    Text(text = "Play", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
                 }
             }
         }
