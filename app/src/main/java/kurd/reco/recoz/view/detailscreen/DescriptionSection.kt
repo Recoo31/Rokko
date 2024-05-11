@@ -30,7 +30,8 @@ fun DescriptionSection(item: DetailScreenModel, expanded: Boolean, onExpandClick
             color = MaterialTheme.colorScheme.primary,
             fontSize = 15.sp,
             maxLines = if (expanded) Int.MAX_VALUE else 3,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+            style = MaterialTheme.typography.titleMedium
         )
     }
 }

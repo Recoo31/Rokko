@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
@@ -63,7 +64,7 @@ fun BottomBar(
                     }
                 },
                 icon = { Icon(destination.icon, contentDescription = destination.label) },
-                label = { Text(destination.label) },
+                label = { Text(destination.label, style = MaterialTheme.typography.labelMedium) },
             )
         }
     }

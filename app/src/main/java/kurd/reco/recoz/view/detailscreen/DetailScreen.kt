@@ -1,5 +1,6 @@
 package kurd.reco.recoz.view.detailscreen
 
+import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,6 +22,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -27,10 +30,12 @@ import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kurd.reco.recoz.PlayerActivity
 import kurd.reco.recoz.Resource
 import kurd.reco.recoz.data.model.DetailScreenModel
 import kurd.reco.recoz.view.homescreen.LoadingBar
 import org.koin.androidx.compose.koinViewModel
+import java.io.Serializable
 
 private val TAG = "DetailScreenRoot"
 
@@ -83,6 +88,7 @@ fun DetailScreen(item: DetailScreenModel, viewModel: DetailScreenVM) {
     val clickedItem by viewModel.clickedItem.collectAsState()
     var isError by remember { mutableStateOf(false) }
     var errorText by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     if (isError) {
         println("Error: $errorText")
@@ -96,7 +102,22 @@ fun DetailScreen(item: DetailScreenModel, viewModel: DetailScreenVM) {
 
     when (val resource = clickedItem) {
         is Resource.Success -> {
-            println(resource.value)
+            val playData = resource.value
+            val intent = Intent(context, PlayerActivity::class.java).apply {
+                putExtra("url", playData.url)
+                if (playData.title != null) {
+                    putExtra("title", playData.title)
+                }
+                if (playData.drm != null) {
+                    putExtra("licenseUrl", playData.drm.licenseUrl)
+                    if (playData.drm.headers != null) {
+                        putExtra("headers", playData.drm.headers as Serializable)
+                    }
+                }
+            }
+
+            context.startActivity(intent)
+
         }
         is Resource.Failure -> {
             isError = true
@@ -153,7 +174,7 @@ fun DetailScreen(item: DetailScreenModel, viewModel: DetailScreenVM) {
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp)
                         ) {
-                            Text(text = "Play")
+                            Text(text = "Play", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
                         }
                     }
                 }

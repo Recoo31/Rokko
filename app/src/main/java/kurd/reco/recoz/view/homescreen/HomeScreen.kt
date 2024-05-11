@@ -21,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -80,13 +79,11 @@ fun HomeScreen(movieList: List<HomeScreenModel>, navigator: DestinationsNavigato
         items(movieList) { item ->
             Text(
                 text = item.title,
-                fontFamily = FontFamily.SansSerif,
+                style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
-                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 16.dp)
+                    .padding(horizontal = 8.dp, vertical = 14.dp)
             )
             LazyRow {
                 items(item.contents) {
@@ -104,7 +101,7 @@ fun MovieItem(item: HomeItemModel, onItemClick: () -> Unit) {
     OutlinedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(2.dp)
+            .padding(horizontal = 8.dp)
             .size(width = 133.dp, height = 182.dp)
             .focusScale(1.04F)
             .clickable {

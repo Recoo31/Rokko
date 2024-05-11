@@ -25,7 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 import kurd.reco.recoz.data.model.SeriesItem
@@ -46,9 +45,8 @@ fun SeasonItem(item: SeriesItem, onClick: (Any) -> Unit) {
                     .fillMaxWidth()
                     .padding(4.dp)
                     .clickable { onClick(item.id) },
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center,
             )
             Box(
@@ -80,6 +78,7 @@ fun SeasonItem(item: SeriesItem, onClick: (Any) -> Unit) {
                 color = MaterialTheme.colorScheme.primary,
                 maxLines = if (expanded) Int.MAX_VALUE else 3,
                 overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleMedium
             )
         }
     }
