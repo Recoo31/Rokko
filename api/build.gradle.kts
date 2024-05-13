@@ -52,12 +52,11 @@ dependencies {
 publishing {
     publications {
         register<MavenPublication>("release") {
-            groupId = "kurd.reco"
-            artifactId = "api"
-            version = "1.0"
-
             afterEvaluate {
                 from(components["release"])
+                groupId = "kurd.reco"
+                artifactId = "api"
+                version = "1.0"
             }
         }
     }
