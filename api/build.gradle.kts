@@ -51,13 +51,8 @@ dependencies {
 
 publishing {
     publications {
-        register<MavenPublication> ("release") {
-            groupId = "com.github.recoo31"
-            artifactId = "api"
-            version = "1.0"
-            afterEvaluate {
-                from(components["release"])
-            }
+        withType<MavenPublication> {
+            groupId = "com.rokko.api"
         }
     }
 }
