@@ -52,13 +52,19 @@ dependencies {
 publishing {
     publications {
         register<MavenPublication>("release") {
-            groupId = "com.github.recoo31"
+            groupId = "kurd.reco"
             artifactId = "api"
             version = "1.0"
 
             afterEvaluate {
                 from(components["release"])
             }
+        }
+    }
+    repositories {
+        maven {
+            name = "api"
+            url = uri("${project.buildDir}/repo")
         }
     }
 }
