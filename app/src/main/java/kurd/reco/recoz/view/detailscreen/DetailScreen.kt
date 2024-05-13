@@ -31,9 +31,9 @@ import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kurd.reco.api.Resource
+import kurd.reco.api.model.DetailScreenModel
 import kurd.reco.recoz.PlayerActivity
-import kurd.reco.recoz.Resource
-import kurd.reco.recoz.data.model.DetailScreenModel
 import kurd.reco.recoz.view.homescreen.LoadingBar
 import org.koin.androidx.compose.koinViewModel
 import java.io.Serializable
@@ -110,9 +110,9 @@ fun DetailScreen(item: DetailScreenModel, viewModel: DetailScreenVM) {
                     putExtra("title", playData.title)
                 }
                 if (playData.drm != null) {
-                    putExtra("licenseUrl", playData.drm.licenseUrl)
-                    if (playData.drm.headers != null) {
-                        putExtra("headers", playData.drm.headers as Serializable)
+                    putExtra("licenseUrl", playData.drm!!.licenseUrl)
+                    if (playData.drm!!.headers != null) {
+                        putExtra("headers", playData.drm!!.headers as Serializable)
                     }
                 }
             }

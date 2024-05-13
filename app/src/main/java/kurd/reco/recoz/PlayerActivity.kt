@@ -31,8 +31,8 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
-import kurd.reco.recoz.data.model.DrmDataModel
-import kurd.reco.recoz.data.model.PlayDataModel
+import kurd.reco.api.model.DrmDataModel
+import kurd.reco.api.model.PlayDataModel
 import kurd.reco.recoz.ui.theme.RecozTheme
 
 class PlayerActivity : ComponentActivity() {
@@ -82,8 +82,8 @@ class PlayerActivity : ComponentActivity() {
                     if (item.drm != null) {
                         setDrmConfiguration(
                             MediaItem.DrmConfiguration.Builder(C.WIDEVINE_UUID)
-                                .setLicenseUri(item.drm.licenseUrl)
-                                .run { if (item.drm.headers != null) setLicenseRequestHeaders(item.drm.headers) else this }
+                                .setLicenseUri(item.drm!!.licenseUrl)
+                                .run { if (item.drm!!.headers != null) setLicenseRequestHeaders(item.drm!!.headers!!) else this }
                                 .build()
                         )
                     }

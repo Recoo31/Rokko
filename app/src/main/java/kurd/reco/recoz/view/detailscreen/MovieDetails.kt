@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.skydoves.landscapist.glide.GlideImage
-import kurd.reco.recoz.data.model.DetailScreenModel
+import kurd.reco.api.model.DetailScreenModel
 
 @Composable
 fun MovieDetails(item: DetailScreenModel, modifier: Modifier = Modifier) {

@@ -7,8 +7,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kurd.reco.recoz.Resource
-import kurd.reco.recoz.data.model.HomeScreenModel
+import kurd.reco.api.Resource
+import kurd.reco.api.model.HomeScreenModel
 import kurd.reco.recoz.plugin.PluginManager
 
 class HomeScreenVM(private val pluginManager: PluginManager): ViewModel() {

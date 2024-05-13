@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kurd.reco.recoz.data.model.DetailScreenModel
+import kurd.reco.api.model.DetailScreenModel
 
 @Composable
 fun DescriptionSection(item: DetailScreenModel, expanded: Boolean, onExpandClick: () -> Unit) {

@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.widget.Toast
 import dalvik.system.PathClassLoader
-import kurd.reco.recoz.data.repo.RemoteRepo
+import kurd.reco.api.RemoteRepo
 import kurd.reco.recoz.extractDexFileFromZip
 import org.json.JSONObject
 import java.io.File

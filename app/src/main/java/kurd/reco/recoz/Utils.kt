@@ -19,12 +19,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.lagradost.nicehttp.Requests
-import com.lagradost.nicehttp.ResponseParser
 import kurd.reco.recoz.plugin.Plugin
 import java.io.File
 import java.io.FileInputStream
@@ -33,34 +27,7 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import kotlin.reflect.KClass
 
-sealed class Resource<out T> {
-    data class Success<out T>(val value: T) : Resource<T>()
-    data class Failure(val error: String) : Resource<Nothing>()
-    data object Loading : Resource<Nothing>()
-}
 
-var app = Requests(responseParser = object : ResponseParser {
-    val mapper: ObjectMapper = jacksonObjectMapper().apply {
-        configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        enable(JsonParser.Feature.INCLUDE_SOURCE_IN_LOCATION)
-    }
-
-    override fun <T : Any> parse(text: String, kClass: KClass<T>): T {
-        return mapper.readValue(text, kClass.java)
-    }
-
-    override fun <T : Any> parseSafe(text: String, kClass: KClass<T>): T? {
-        return try {
-            mapper.readValue(text, kClass.java)
-        } catch (e: Exception) {
-            null
-        }
-    }
-
-    override fun writeValueAsString(obj: Any): String {
-        return mapper.writeValueAsString(obj)
-    }
-})
 
 inline fun Modifier.ifTrue(predicate: Boolean, builder: Modifier.() -> Modifier) = then(if (predicate) builder() else Modifier)
 inline fun Modifier.ifFalse(predicate: Boolean, builder: Modifier.() -> Modifier) = then(if (!predicate) builder() else Modifier)

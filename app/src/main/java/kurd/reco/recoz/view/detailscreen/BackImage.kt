@@ -15,7 +15,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
-import kurd.reco.recoz.data.model.DetailScreenModel
+import kurd.reco.api.model.DetailScreenModel
 
 @Composable
 fun BackImage(item: DetailScreenModel, modifier: Modifier = Modifier) {

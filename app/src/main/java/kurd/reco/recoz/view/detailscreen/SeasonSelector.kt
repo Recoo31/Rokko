@@ -17,7 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import kurd.reco.recoz.data.model.SeriesDataModel
+import kurd.reco.api.model.SeriesDataModel
 
 @Composable
 fun SeasonsSelector(season: List<SeriesDataModel>, selectedSeason: Int, onSeasonSelected: (Int) -> Unit) {

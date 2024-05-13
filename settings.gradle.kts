@@ -23,5 +23,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Recoz"
 include(":app")
-include(":TmdbApi")
-include(":Blutv")
+include(":api")

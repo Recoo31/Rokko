@@ -30,9 +30,9 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.DetailScreenRootDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.skydoves.landscapist.glide.GlideImage
-import kurd.reco.recoz.Resource
-import kurd.reco.recoz.data.model.HomeItemModel
-import kurd.reco.recoz.data.model.HomeScreenModel
+import kurd.reco.api.model.HomeItemModel
+import kurd.reco.api.model.HomeScreenModel
+import kurd.reco.api.Resource
 import kurd.reco.recoz.focusScale
 import kurd.reco.recoz.plugin.PluginManager
 import org.koin.androidx.compose.koinViewModel

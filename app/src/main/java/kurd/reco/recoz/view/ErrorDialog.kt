@@ -10,10 +10,10 @@ import androidx.compose.ui.Modifier
 fun ErrorDialog(
     errorMessage: String,
     modifier: Modifier = Modifier,
-    onDismiss: () -> Unit // Dialog kapatıldığında çalışacak işlev
+    onDismiss: () -> Unit
 ) {
     AlertDialog(
-        onDismissRequest = onDismiss, // Dialog dışına tıklandığında da kapat
+        onDismissRequest = onDismiss,
         modifier = modifier,
         title = {
             Text(
