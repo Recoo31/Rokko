@@ -53,7 +53,7 @@ publishing {
     publications {
         register<MavenPublication> ("release") {
             groupId = "com.github.recoo31"
-            artifactId = "rokkoapi"
+            artifactId = "api"
             version = "1.0"
             afterEvaluate {
                 from(components["release"])
