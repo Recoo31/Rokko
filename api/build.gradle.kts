@@ -61,10 +61,4 @@ publishing {
             }
         }
     }
-    repositories {
-        maven {
-            name = "api"
-            url = uri("${project.buildDir}/repo")
-        }
-    }
 }
