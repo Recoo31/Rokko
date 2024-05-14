@@ -16,7 +16,7 @@ koinAndroidxCompose = "3.5.3"
 appcompat = "1.6.1"
 material = "1.12.0"
 media3Exoplayer = "1.3.1"
-rokko = "-SNAPSHOT"
+rokko = "3095ae4374"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
