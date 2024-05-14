@@ -94,6 +94,6 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer.dash)
     implementation(libs.androidx.media3.session)
 
-    implementation(libs.rokko)
+    implementation(libs.rokko.api)
 
 }
