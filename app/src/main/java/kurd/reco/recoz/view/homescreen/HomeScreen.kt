@@ -35,6 +35,7 @@ import kurd.reco.api.model.HomeScreenModel
 import kurd.reco.api.Resource
 import kurd.reco.recoz.focusScale
 import kurd.reco.recoz.plugin.PluginManager
+import kurd.reco.recoz.view.SearchFAB
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
@@ -57,6 +58,7 @@ fun HomeScreenRoot(navigator: DestinationsNavigator) {
 
             is Resource.Success -> {
                 HomeScreen(resource.value, navigator)
+                SearchFAB(viewModel)
             }
 
             is Resource.Failure -> {
@@ -67,7 +69,7 @@ fun HomeScreenRoot(navigator: DestinationsNavigator) {
 
         if (isError) {
             println("Error: $errorText")
-            Text(text = errorText, fontWeight = FontWeight.SemiBold, fontSize = 16.sp, textAlign = TextAlign.Center)
+            Text(text = errorText, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, textAlign = TextAlign.Center)
         }
     }
 }

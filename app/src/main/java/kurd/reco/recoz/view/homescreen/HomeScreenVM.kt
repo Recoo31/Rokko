@@ -1,6 +1,9 @@
 package kurd.reco.recoz.view.homescreen
 
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -12,8 +15,10 @@ import kurd.reco.api.model.HomeScreenModel
 import kurd.reco.recoz.plugin.PluginManager
 
 class HomeScreenVM(private val pluginManager: PluginManager): ViewModel() {
-    private val _moviesList: MutableStateFlow<Resource<List<HomeScreenModel>>> = MutableStateFlow(Resource.Loading)
-    val moviesList: StateFlow<Resource<List<HomeScreenModel>>> = _moviesList
+    var moviesList: MutableStateFlow<Resource<List<HomeScreenModel>>> = MutableStateFlow(Resource.Loading)
+        private set
+
+    var query by mutableStateOf("")
 
     init {
         getMovies()
@@ -23,11 +28,15 @@ class HomeScreenVM(private val pluginManager: PluginManager): ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = pluginManager.getSelectedPlugin().getHomeScreenItems()
-                _moviesList.value = response
+                moviesList.value = response
             } catch (e: Exception) {
                 e.printStackTrace()
-                _moviesList.value = Resource.Failure(e.localizedMessage ?: e.message ?: "Unknown Error")
+                moviesList.value = Resource.Failure(e.localizedMessage ?: e.message ?: "Unknown Error")
             }
         }
+    }
+
+    fun search() {
+
     }
 }

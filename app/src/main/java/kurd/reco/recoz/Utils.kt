@@ -9,6 +9,7 @@ import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
@@ -18,6 +19,7 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.dp
 import kurd.reco.recoz.plugin.Plugin
 import java.io.File
@@ -25,7 +27,6 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
-import kotlin.reflect.KClass
 
 
 
@@ -86,14 +87,25 @@ operator fun PaddingValues.plus(other: PaddingValues): PaddingValues {
     )
 }
 
-@Composable
-fun LocalPadding(additional: PaddingValues = PaddingValues(0.dp)): PaddingValues {
-    return LocalPaddingValues.current?.plus(additional) ?: additional
-}
 
 @Composable
-fun LocalPadding(additional: Dp): PaddingValues {
-    return LocalPaddingValues.current?.plus(PaddingValues(additional)) ?: PaddingValues(additional)
+fun PaddingValues.merge(other: PaddingValues): PaddingValues {
+    val direction = LocalLayoutDirection.current
+
+    return PaddingValues(
+        start = max(this.calculateStartPadding(direction), other.calculateStartPadding(direction)),
+        top = max(this.calculateTopPadding(), other.calculateTopPadding()),
+        end = max(this.calculateEndPadding(direction), other.calculateEndPadding(direction)),
+        bottom = max(this.calculateBottomPadding(), other.calculateBottomPadding())
+    )
+}
+
+fun Modifier.mergedLocalPadding(other: PaddingValues, additional: PaddingValues = PaddingValues(0.dp)) = composed {
+    this.padding((LocalPaddingValues.current?.merge(other) ?: other).plus(additional))
+}
+
+fun Modifier.mergedLocalPadding(other: PaddingValues, additional: Dp) = composed {
+    this.mergedLocalPadding(other, PaddingValues(additional))
 }
 
 fun extractDexFileFromZip(context: Context, plugin: Plugin): File? {
