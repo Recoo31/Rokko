@@ -10,6 +10,6 @@ interface RemoteRepo {
     suspend fun getHomeScreenItems(): Resource<List<HomeScreenModel>>
     suspend fun getDetailScreenItems(id: Any, isSeries: Boolean): Resource<DetailScreenModel>
     suspend fun getUrl(id: Any): Resource<PlayDataModel>
-    suspend fun search(query: String): Resource<List<SearchModel>>
+    suspend fun search(query: String): List<SearchModel>
     var seriesList: List<SeriesDataModel>?
 }
