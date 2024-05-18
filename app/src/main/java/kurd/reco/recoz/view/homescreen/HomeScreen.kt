@@ -1,5 +1,6 @@
 package kurd.reco.recoz.view.homescreen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -30,12 +32,12 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.DetailScreenRootDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.skydoves.landscapist.glide.GlideImage
+import kurd.reco.api.Resource
 import kurd.reco.api.model.HomeItemModel
 import kurd.reco.api.model.HomeScreenModel
-import kurd.reco.api.Resource
+import kurd.reco.recoz.R
 import kurd.reco.recoz.focusScale
 import kurd.reco.recoz.plugin.PluginManager
-import kurd.reco.recoz.view.SearchFAB
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
@@ -45,7 +47,6 @@ import org.koin.compose.koinInject
 fun HomeScreenRoot(navigator: DestinationsNavigator) {
     val viewModel: HomeScreenVM = koinViewModel()
     val pluginManager: PluginManager = koinInject()
-
     val movieList by viewModel.moviesList.collectAsState()
     var isError by remember { mutableStateOf(false) }
     var errorText by remember { mutableStateOf("") }
@@ -58,7 +59,6 @@ fun HomeScreenRoot(navigator: DestinationsNavigator) {
 
             is Resource.Success -> {
                 HomeScreen(resource.value, navigator)
-                SearchFAB(viewModel)
             }
 
             is Resource.Failure -> {
@@ -69,7 +69,12 @@ fun HomeScreenRoot(navigator: DestinationsNavigator) {
 
         if (isError) {
             println("Error: $errorText")
-            Text(text = errorText, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, textAlign = TextAlign.Center)
+            Text(
+                text = errorText,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 13.sp,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
@@ -78,6 +83,17 @@ fun HomeScreenRoot(navigator: DestinationsNavigator) {
 @Composable
 fun HomeScreen(movieList: List<HomeScreenModel>, navigator: DestinationsNavigator) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
+
+        item {
+            Image(
+                painter = painterResource(id = R.drawable.alakurd),
+                contentDescription = "ala kurd",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            )
+        }
+
         items(movieList) { item ->
             Text(
                 text = item.title,
@@ -90,7 +106,12 @@ fun HomeScreen(movieList: List<HomeScreenModel>, navigator: DestinationsNavigato
             LazyRow {
                 items(item.contents) {
                     MovieItem(item = it, onItemClick = {
-                        navigator.navigate(DetailScreenRootDestination(it.id.toString(), it.isSeries))
+                        navigator.navigate(
+                            DetailScreenRootDestination(
+                                it.id.toString(),
+                                it.isSeries
+                            )
+                        )
                     })
                 }
             }
@@ -118,7 +139,7 @@ fun MovieItem(item: HomeItemModel, onItemClick: () -> Unit) {
                 LoadingBar()
             },
 
-        )
+            )
     }
 }
 

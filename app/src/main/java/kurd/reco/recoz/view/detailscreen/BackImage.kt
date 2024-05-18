@@ -33,7 +33,7 @@ fun BackImage(item: DetailScreenModel, modifier: Modifier = Modifier) {
                             .align(Alignment.Center)
                     )
                 }
-            },
+            }
         )
         Box(
             modifier = Modifier

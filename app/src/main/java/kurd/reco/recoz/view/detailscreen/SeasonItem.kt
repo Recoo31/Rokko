@@ -48,6 +48,7 @@ fun SeasonItem(item: SeriesItem, onClick: (Any) -> Unit) {
                 fontWeight = FontWeight.SemiBold,
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.primary
             )
             Box(
                 modifier = Modifier
@@ -75,10 +76,10 @@ fun SeasonItem(item: SeriesItem, onClick: (Any) -> Unit) {
                     .clickable { expanded = !expanded }
                     .animateContentSize(animationSpec = tween(200)),
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.primary,
                 maxLines = if (expanded) Int.MAX_VALUE else 3,
                 overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
             )
         }
     }
