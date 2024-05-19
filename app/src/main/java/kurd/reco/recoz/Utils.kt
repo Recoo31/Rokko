@@ -1,6 +1,11 @@
 package kurd.reco.recoz
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.view.View
+import android.view.Window
+import android.widget.Toast
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -21,6 +26,8 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import kurd.reco.recoz.plugin.Plugin
 import java.io.File
 import java.io.FileInputStream
@@ -129,4 +136,34 @@ fun extractDexFileFromZip(context: Context, plugin: Plugin): File? {
         }
     }
     return null
+}
+
+
+
+fun hideSystemBars(window: Window) {
+    WindowInsetsControllerCompat(window, window.decorView).let {
+        it.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        it.hide(WindowInsetsCompat.Type.systemBars())
+    }
+}
+
+
+@Composable
+fun formatTime(ms: Long): String {
+    val totalSeconds = ms / 1000
+    val minutes = totalSeconds / 60
+    val seconds = totalSeconds % 60
+    return "$minutes:$seconds"
+}
+
+fun showOtherVideoApps(videoUri: Uri, context: Context) {
+    val intent = Intent(Intent.ACTION_VIEW).apply {
+        setDataAndType(videoUri, "video/*")
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+    }
+    if (intent.resolveActivity(context.packageManager) != null) {
+        context.startActivity(Intent.createChooser(intent, "Open video with"))
+    } else {
+        Toast.makeText(context, "No suitable apps found to play this video", Toast.LENGTH_SHORT).show()
+    }
 }

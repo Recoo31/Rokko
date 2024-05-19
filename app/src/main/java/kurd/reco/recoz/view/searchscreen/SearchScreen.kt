@@ -40,7 +40,6 @@ import com.ramcosta.composedestinations.generated.destinations.DetailScreenRootD
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
-import kurd.reco.api.Resource
 import kurd.reco.api.model.SearchModel
 import kurd.reco.recoz.ui.theme.RecozTheme
 import kurd.reco.recoz.view.homescreen.LoadingBar

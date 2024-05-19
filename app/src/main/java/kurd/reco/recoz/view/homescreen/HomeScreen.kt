@@ -1,6 +1,5 @@
 package kurd.reco.recoz.view.homescreen
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,7 +33,6 @@ import com.skydoves.landscapist.glide.GlideImage
 import kurd.reco.api.Resource
 import kurd.reco.api.model.HomeItemModel
 import kurd.reco.api.model.HomeScreenModel
-import kurd.reco.recoz.R
 import kurd.reco.recoz.focusScale
 import kurd.reco.recoz.plugin.PluginManager
 import org.koin.androidx.compose.koinViewModel
@@ -83,17 +80,6 @@ fun HomeScreenRoot(navigator: DestinationsNavigator) {
 @Composable
 fun HomeScreen(movieList: List<HomeScreenModel>, navigator: DestinationsNavigator) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-
-        item {
-            Image(
-                painter = painterResource(id = R.drawable.alakurd),
-                contentDescription = "ala kurd",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            )
-        }
-
         items(movieList) { item ->
             Text(
                 text = item.title,
