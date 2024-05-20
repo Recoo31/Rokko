@@ -1,5 +1,6 @@
 package kurd.reco.recoz.view.homescreen
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,29 +54,22 @@ fun HomeScreenRoot(navigator: DestinationsNavigator) {
             is Resource.Loading -> {
                 LoadingBar()
             }
-
             is Resource.Success -> {
                 HomeScreen(resource.value, navigator)
             }
-
             is Resource.Failure -> {
                 isError = true
                 errorText = resource.error
+                // Logging the error for future debugging
+                Log.e("HomeScreenRoot", "Error loading movie list: $errorText")
             }
         }
 
         if (isError) {
-            println("Error: $errorText")
-            Text(
-                text = errorText,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 13.sp,
-                textAlign = TextAlign.Center
-            )
+            ErrorMessage(errorText)
         }
     }
 }
-
 
 @Composable
 fun HomeScreen(movieList: List<HomeScreenModel>, navigator: DestinationsNavigator) {
@@ -90,15 +84,15 @@ fun HomeScreen(movieList: List<HomeScreenModel>, navigator: DestinationsNavigato
                     .padding(horizontal = 8.dp, vertical = 14.dp)
             )
             LazyRow {
-                items(item.contents) {
-                    MovieItem(item = it, onItemClick = {
+                items(item.contents) { movie ->
+                    MovieItem(movie) {
                         navigator.navigate(
                             DetailScreenRootDestination(
-                                it.id.toString(),
-                                it.isSeries
+                                movie.id.toString(),
+                                movie.isSeries
                             )
                         )
-                    })
+                    }
                 }
             }
         }
@@ -109,27 +103,31 @@ fun HomeScreen(movieList: List<HomeScreenModel>, navigator: DestinationsNavigato
 fun MovieItem(item: HomeItemModel, onItemClick: () -> Unit) {
     OutlinedCard(
         modifier = Modifier
-            .fillMaxWidth()
             .padding(horizontal = 8.dp)
             .size(width = 133.dp, height = 182.dp)
             .focusScale(1.04F)
-            .clickable {
-                onItemClick()
-            },
+            .clickable { onItemClick() },
     ) {
         GlideImage(
-            imageModel = {
-                item.poster
-            },
-            loading = {
-                LoadingBar()
-            },
-
-            )
+            imageModel = { item.poster },
+            loading = { LoadingBar() }
+        )
     }
 }
 
 @Composable
 fun LoadingBar(modifier: Modifier = Modifier) {
     CircularProgressIndicator(modifier = modifier)
+}
+
+@Composable
+fun ErrorMessage(errorText: String) {
+    Text(
+        text = errorText,
+        color = MaterialTheme.colorScheme.error,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 13.sp,
+        textAlign = TextAlign.Center,
+        modifier = Modifier.padding(16.dp)
+    )
 }

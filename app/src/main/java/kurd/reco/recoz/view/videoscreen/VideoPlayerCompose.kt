@@ -36,18 +36,17 @@ fun VideoPlayerCompose(item: PlayDataModel) {
 
     val exoPlayer = remember {
         ExoPlayer.Builder(context).setTrackSelector(trackSelector).build().apply {
-            val mediaItemBuilder = MediaItem.Builder().setUri(item.url)
-
-            item.drm?.let { drm ->
-                mediaItemBuilder.setDrmConfiguration(
-                    MediaItem.DrmConfiguration.Builder(C.WIDEVINE_UUID)
-                        .setLicenseUri(drm.licenseUrl)
-                        .run { drm.headers?.let { setLicenseRequestHeaders(it) } ?: this }
-                        .build()
-                )
+            val mediaItem = MediaItem.fromUri(item.url).buildUpon().run {
+                if (item.drm != null) {
+                    setDrmConfiguration(
+                        MediaItem.DrmConfiguration.Builder(C.WIDEVINE_UUID)
+                            .setLicenseUri(item.drm!!.licenseUrl)
+                            .run { if (item.drm!!.headers != null) setLicenseRequestHeaders(item.drm!!.headers!!) else this }
+                            .build()
+                    )
+                }
+                build()
             }
-
-            val mediaItem = mediaItemBuilder.build()
             setMediaItem(mediaItem)
             prepare()
             playWhenReady = true
@@ -57,16 +56,17 @@ fun VideoPlayerCompose(item: PlayDataModel) {
     var oldOrientation by rememberSaveable { mutableIntStateOf(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) }
 
     DisposableEffect(
-        (context as Activity).apply {
+        context.apply {
             oldOrientation = requestedOrientation
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         }
     ) {
         onDispose {
             exoPlayer.release()
-            (context).requestedOrientation = oldOrientation
+            context.requestedOrientation = oldOrientation
         }
     }
 
-    VideoControlBar(exoPlayer = exoPlayer, item)
+    VideoControlBar(exoPlayer = exoPlayer, item, trackSelector)
 }
+

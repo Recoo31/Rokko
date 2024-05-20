@@ -1,6 +1,5 @@
 package kurd.reco.recoz.view.videoscreen
 
-import android.net.Uri
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import androidx.annotation.OptIn
@@ -15,9 +14,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,31 +27,32 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.media3.common.C
-import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
-import androidx.media3.common.Tracks
 import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import kotlinx.coroutines.delay
 import kurd.reco.api.model.PlayDataModel
-import kurd.reco.recoz.showOtherVideoApps
 
 @OptIn(UnstableApi::class)
 @Composable
-fun VideoControlBar(exoPlayer: ExoPlayer, item: PlayDataModel) {
+fun VideoControlBar(
+    exoPlayer: ExoPlayer,
+    item: PlayDataModel,
+    trackSelector: DefaultTrackSelector
+) {
     var isPlaying by remember { mutableStateOf(exoPlayer.isPlaying) }
     var currentTime by remember { mutableLongStateOf(0L) }
     var duration by remember { mutableLongStateOf(exoPlayer.duration) }
     var showControls by remember { mutableStateOf(false) }
     var videoSize by remember { mutableStateOf(exoPlayer.videoSize) }
+    var showSettingsDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     LaunchedEffect(exoPlayer) {
@@ -71,13 +69,6 @@ fun VideoControlBar(exoPlayer: ExoPlayer, item: PlayDataModel) {
 
             override fun onVideoSizeChanged(_videoSize: VideoSize) {
                 videoSize = _videoSize
-            }
-
-            override fun onPlayerError(error: PlaybackException) {
-                error.printStackTrace()
-                exoPlayer.release()
-                showOtherVideoApps(Uri.parse(item.url), context)
-
             }
         }
         exoPlayer.addListener(listener)
@@ -107,9 +98,10 @@ fun VideoControlBar(exoPlayer: ExoPlayer, item: PlayDataModel) {
                 enter = fadeIn(tween(200)),
                 exit = fadeOut(tween(200))
             ) {
-                Box(modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.5f))
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.5f))
                 ) {
                     Box(
                         modifier = Modifier
@@ -131,12 +123,17 @@ fun VideoControlBar(exoPlayer: ExoPlayer, item: PlayDataModel) {
                         }
                     }
 
-
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-                        VideoPlayerBottom(exoPlayer, currentTime, duration, isPlaying)
+                        VideoPlayerBottom(exoPlayer, currentTime, duration, isPlaying) {
+                            showSettingsDialog = !showSettingsDialog
+                        }
                     }
+                }
+                if (showSettingsDialog) {
+                    SettingsDialog(trackSelector, onDismiss = { showSettingsDialog = false })
                 }
             }
         }
     }
 }
+

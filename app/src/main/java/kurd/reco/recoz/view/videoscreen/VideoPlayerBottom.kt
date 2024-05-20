@@ -1,5 +1,6 @@
 package kurd.reco.recoz.view.videoscreen
 
+import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,12 +16,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import kurd.reco.recoz.R
 import kurd.reco.recoz.formatTime
 
+@OptIn(UnstableApi::class)
 @Composable
-fun VideoPlayerBottom(exoPlayer: ExoPlayer, currentTime: Long, duration: Long, isPlaying: Boolean) {
+fun VideoPlayerBottom(
+    exoPlayer: ExoPlayer,
+    currentTime: Long,
+    duration: Long,
+    isPlaying: Boolean,
+    onClick: () -> Unit,
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -66,7 +75,7 @@ fun VideoPlayerBottom(exoPlayer: ExoPlayer, currentTime: Long, duration: Long, i
                 )
             )
         }
-        IconButton(onClick = {}) {
+        IconButton(onClick = { onClick() }) {
             Icon(
                 painter = painterResource(id = R.drawable.rounded_video_settings_24),
                 contentDescription = null,
@@ -74,4 +83,6 @@ fun VideoPlayerBottom(exoPlayer: ExoPlayer, currentTime: Long, duration: Long, i
             )
         }
     }
+
+
 }
