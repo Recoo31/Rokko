@@ -25,7 +25,7 @@ import kurd.reco.api.model.DetailScreenModel
 @Composable
 fun MovieDetails(item: DetailScreenModel, modifier: Modifier = Modifier) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -36,7 +36,10 @@ fun MovieDetails(item: DetailScreenModel, modifier: Modifier = Modifier) {
                 .height(200.dp)
                 .clip(MaterialTheme.shapes.medium)
         ) {
-            GlideImage(imageModel = { item.image }, modifier = Modifier.fillMaxSize())
+            GlideImage(
+                imageModel = { item.image },
+                modifier = Modifier.fillMaxSize()
+            )
         }
 
         Column(

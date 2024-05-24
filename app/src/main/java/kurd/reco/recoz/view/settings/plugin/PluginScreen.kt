@@ -19,18 +19,18 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kurd.reco.recoz.plugin.PluginManager
 import kurd.reco.recoz.view.settings.SettingsVM
+import kurd.reco.recoz.view.settings.logs.AppLog
 
+private val TAG = "PluginBottomSheet"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PluginBottomSheet(viewModel: SettingsVM, pluginManager: PluginManager) {
     val sheetState = rememberModalBottomSheetState()
-    val context = LocalContext.current
 
     ModalBottomSheet(
         onDismissRequest = { viewModel.showBottomSheet = false },
@@ -46,6 +46,7 @@ fun PluginBottomSheet(viewModel: SettingsVM, pluginManager: PluginManager) {
                     onClick = {
                         viewModel.showBottomSheet = false
                         pluginManager.selectPlugin(it)
+                        AppLog.d(TAG,"Selected plugin: ${it.name}")
                     },
                     modifier = Modifier
                         .padding(16.dp)

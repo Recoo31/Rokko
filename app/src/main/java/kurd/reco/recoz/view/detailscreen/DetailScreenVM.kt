@@ -1,6 +1,5 @@
 package kurd.reco.recoz.view.detailscreen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -11,6 +10,7 @@ import kurd.reco.api.Resource
 import kurd.reco.api.model.DetailScreenModel
 import kurd.reco.api.model.PlayDataModel
 import kurd.reco.recoz.plugin.PluginManager
+import kurd.reco.recoz.view.settings.logs.AppLog
 
 class DetailScreenVM(private val pluginManager: PluginManager) : ViewModel() {
     private val _item: MutableStateFlow<Resource<DetailScreenModel>> = MutableStateFlow(Resource.Loading)
@@ -29,7 +29,7 @@ class DetailScreenVM(private val pluginManager: PluginManager) : ViewModel() {
     fun getMovie(id: Any, isSeries: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                Log.d(TAG, "getMovie: $id")
+                AppLog.d(TAG, "getMovie: ID: $id | IsSeries: $isSeries")
                 val response = pluginManager.getSelectedPlugin().getDetailScreenItems(id, isSeries)
                 _item.value = response
            } catch (e: Exception) {
@@ -44,6 +44,7 @@ class DetailScreenVM(private val pluginManager: PluginManager) : ViewModel() {
             try {
                 val response = pluginManager.getSelectedPlugin().getUrl(id)
                 _clickedItem.value = response
+                AppLog.i(TAG, "getUrl: $response")
             } catch (e: Exception) {
                 e.printStackTrace()
                 _clickedItem.value = Resource.Failure(e.localizedMessage ?: e.message ?: "Unknown Error")

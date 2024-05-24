@@ -35,9 +35,8 @@ fun SeasonItem(item: SeriesItem, onClick: (Any) -> Unit) {
     ElevatedCard(
         modifier = Modifier
             .padding(8.dp)
-            .fillMaxWidth(),
-
-        ) {
+            .fillMaxWidth()
+    ) {
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
             Text(
                 text = item.title,
@@ -54,7 +53,7 @@ fun SeasonItem(item: SeriesItem, onClick: (Any) -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(8.dp))
-                    .clickable { onClick(item.id) },
+                    .clickable { onClick(item.id) }
             ) {
                 GlideImage(
                     imageModel = { item.poster },

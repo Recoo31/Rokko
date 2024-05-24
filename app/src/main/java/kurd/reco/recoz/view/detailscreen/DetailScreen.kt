@@ -1,7 +1,6 @@
 package kurd.reco.recoz.view.detailscreen
 
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,37 +32,39 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kurd.reco.api.Resource
 import kurd.reco.api.model.DetailScreenModel
+import kurd.reco.recoz.MainVM
 import kurd.reco.recoz.PlayerActivity
 import kurd.reco.recoz.view.homescreen.LoadingBar
+import kurd.reco.recoz.view.settings.logs.AppLog
 import org.koin.androidx.compose.koinViewModel
-import java.io.Serializable
+import org.koin.compose.koinInject
 
 private val TAG = "DetailScreenRoot"
 
 @Destination<RootGraph>
 @Composable
-fun DetailScreenRoot(id: String, isSeries: Boolean, navigator: DestinationsNavigator) {
+fun DetailScreenRoot(
+    id: String,
+    isSeries: Boolean,
+    navigator: DestinationsNavigator
+) {
     val viewModel: DetailScreenVM = koinViewModel()
-
     val item by viewModel.item.collectAsState()
     var isError by remember { mutableStateOf(false) }
     var errorText by remember { mutableStateOf("") }
 
-    LaunchedEffect(true) {
-        Log.d(TAG, "LaunchedEffect: $id")
+    LaunchedEffect(id) {
+        AppLog.d(TAG, "LaunchedEffect: $id")
         viewModel.getMovie(id, isSeries)
     }
 
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
         when (val resource = item) {
-            is Resource.Loading -> {
-                LoadingBar()
-            }
-
-            is Resource.Success -> {
-                DetailScreen(resource.value, viewModel)
-            }
-
+            is Resource.Loading -> LoadingBar()
+            is Resource.Success -> DetailScreen(resource.value, viewModel)
             is Resource.Failure -> {
                 isError = true
                 errorText = resource.error
@@ -83,13 +84,17 @@ fun DetailScreenRoot(id: String, isSeries: Boolean, navigator: DestinationsNavig
 }
 
 @Composable
-fun DetailScreen(item: DetailScreenModel, viewModel: DetailScreenVM) {
+fun DetailScreen(
+    item: DetailScreenModel,
+    viewModel: DetailScreenVM
+) {
     var expanded by remember { mutableStateOf(false) }
     var selectedSeason by rememberSaveable { mutableIntStateOf(0) }
     val clickedItem by viewModel.clickedItem.collectAsState()
     var isError by remember { mutableStateOf(false) }
     var errorText by remember { mutableStateOf("") }
     val context = LocalContext.current
+    val mainVM: MainVM = koinInject()
 
     if (isError) {
         println("Error: $errorText")
@@ -104,44 +109,39 @@ fun DetailScreen(item: DetailScreenModel, viewModel: DetailScreenVM) {
     when (val resource = clickedItem) {
         is Resource.Success -> {
             val playData = resource.value
-            val intent = Intent(context, PlayerActivity::class.java).apply {
-                putExtra("url", playData.url)
-                if (playData.title != null) {
-                    putExtra("title", playData.title)
-                }
-                if (playData.drm != null) {
-                    putExtra("licenseUrl", playData.drm!!.licenseUrl)
-                    if (playData.drm!!.headers != null) {
-                        putExtra("headers", playData.drm!!.headers as Serializable)
-                    }
-                }
-            }
+            mainVM.playDataModel = playData
+            val intent = Intent(context, PlayerActivity::class.java)
             context.startActivity(intent)
         }
         is Resource.Failure -> {
             isError = true
             errorText = resource.error
         }
-        is Resource.Loading -> {
-        }
+        is Resource.Loading -> Unit
     }
 
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            BackImage(item)
+
+        item.backImage?.let {
+            item {
+                BackImage(it)
+            }
         }
 
         item {
             MovieDetails(item)
         }
 
-        item {
-            DescriptionSection(
-                item = item,
-                expanded = expanded,
-                onExpandClick = { expanded = !expanded }
-            )
+        item.description?.let {
+            item {
+                DescriptionSection(
+                    item = it,
+                    expanded = expanded,
+                    onExpandClick = { expanded = !expanded }
+                )
+            }
         }
+
         if (item.isSeries) {
             viewModel.seriesList?.let { season ->
                 item {
@@ -156,23 +156,22 @@ fun DetailScreen(item: DetailScreenModel, viewModel: DetailScreenVM) {
                         viewModel.getUrl(it)
                     }
                 }
-
             }
         } else {
             item {
                 Button(
-                    onClick = {
-                        viewModel.getUrl(item.id)
-                    },
+                    onClick = { viewModel.getUrl(item.id) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                 ) {
-                    Text(text = "Play", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
+                    Text(
+                        text = "Play",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.SemiBold
+                    )
                 }
             }
         }
     }
-
-
 }

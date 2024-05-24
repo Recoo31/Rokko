@@ -12,12 +12,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.media3.common.C
-import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import kurd.reco.api.model.PlayDataModel
-import kurd.reco.recoz.hideSystemBars
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -27,30 +25,28 @@ fun VideoPlayerCompose(item: PlayDataModel) {
 
     val trackSelector = DefaultTrackSelector(context).apply {
         setParameters(
-            buildUponParameters().setMinVideoSize(1920, 1080)
-                .setForceHighestSupportedBitrate(true)
+            buildUponParameters()
+                .setAllowVideoMixedMimeTypeAdaptiveness(true)
+                .setAllowVideoNonSeamlessAdaptiveness(true)
+                .setSelectUndeterminedTextLanguage(true)
+                .setAllowAudioMixedMimeTypeAdaptiveness(true)
+                .setAllowMultipleAdaptiveSelections(true)
+                .setPreferredTextRoleFlags(C.ROLE_FLAG_SUBTITLE)
         )
     }
 
     hideSystemBars(windows)
 
     val exoPlayer = remember {
-        ExoPlayer.Builder(context).setTrackSelector(trackSelector).build().apply {
-            val mediaItem = MediaItem.fromUri(item.url).buildUpon().run {
-                if (item.drm != null) {
-                    setDrmConfiguration(
-                        MediaItem.DrmConfiguration.Builder(C.WIDEVINE_UUID)
-                            .setLicenseUri(item.drm!!.licenseUrl)
-                            .run { if (item.drm!!.headers != null) setLicenseRequestHeaders(item.drm!!.headers!!) else this }
-                            .build()
-                    )
-                }
-                build()
+        ExoPlayer.Builder(context)
+            .setTrackSelector(trackSelector)
+            .build()
+            .apply {
+                val mediaItem = createMediaItem(item)
+                setMediaItem(mediaItem)
+                prepare()
+                playWhenReady = true
             }
-            setMediaItem(mediaItem)
-            prepare()
-            playWhenReady = true
-        }
     }
 
     var oldOrientation by rememberSaveable { mutableIntStateOf(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) }

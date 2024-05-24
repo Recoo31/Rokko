@@ -1,5 +1,7 @@
 package kurd.reco.recoz.view.videoscreen
 
+import android.content.Intent
+import android.net.Uri
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import androidx.annotation.OptIn
@@ -14,12 +16,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +32,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat.startActivity
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
@@ -55,6 +59,9 @@ fun VideoControlBar(
     var showSettingsDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
+    var _resizeMode by remember { mutableIntStateOf(AspectRatioFrameLayout.RESIZE_MODE_FIT) }
+
+
     LaunchedEffect(exoPlayer) {
         val listener = object : Player.Listener {
             override fun onIsPlayingChanged(_isPlaying: Boolean) {
@@ -70,6 +77,19 @@ fun VideoControlBar(
             override fun onVideoSizeChanged(_videoSize: VideoSize) {
                 videoSize = _videoSize
             }
+
+            override fun onPlayerError(error: PlaybackException) {
+                error.printStackTrace()
+                exoPlayer.release()
+
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    setDataAndType(Uri.parse(item.url), "video/*")
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+
+                startActivity(context, intent, null)
+
+            }
         }
         exoPlayer.addListener(listener)
         while (true) {
@@ -79,14 +99,19 @@ fun VideoControlBar(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        AndroidView(factory = {
-            PlayerView(context).apply {
-                useController = false
-                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
-                player = exoPlayer
-                layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+        AndroidView(
+            factory = {
+                PlayerView(context).apply {
+                    useController = false
+                    resizeMode = _resizeMode
+                    player = exoPlayer
+                    layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+                }
+            },
+            update = {
+                it.resizeMode = _resizeMode
             }
-        })
+        )
 
         Box(
             modifier = Modifier
@@ -109,7 +134,10 @@ fun VideoControlBar(
                             .padding(16.dp),
                         contentAlignment = Alignment.TopCenter
                     ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
                             if (!item.title.isNullOrEmpty()) {
                                 Text(
                                     text = item.title!!,
@@ -123,14 +151,32 @@ fun VideoControlBar(
                         }
                     }
 
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-                        VideoPlayerBottom(exoPlayer, currentTime, duration, isPlaying) {
-                            showSettingsDialog = !showSettingsDialog
-                        }
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        VideoPlayerBottom(
+                            exoPlayer,
+                            currentTime,
+                            duration,
+                            isPlaying,
+                            onResizeClick = {
+                                println(_resizeMode)
+                                _resizeMode = when (_resizeMode) {
+                                    AspectRatioFrameLayout.RESIZE_MODE_FIT -> AspectRatioFrameLayout.RESIZE_MODE_FILL
+                                    AspectRatioFrameLayout.RESIZE_MODE_FILL -> AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                                    AspectRatioFrameLayout.RESIZE_MODE_ZOOM -> AspectRatioFrameLayout.RESIZE_MODE_FIT
+                                    else -> AspectRatioFrameLayout.RESIZE_MODE_FILL
+                                }
+                            },
+                            onSettingsClick = { showSettingsDialog = !showSettingsDialog })
                     }
                 }
                 if (showSettingsDialog) {
-                    SettingsDialog(trackSelector, onDismiss = { showSettingsDialog = false })
+                    SettingsDialog(
+                        exoPlayer.currentTracks,
+                        trackSelector,
+                        onDismiss = { showSettingsDialog = false })
                 }
             }
         }

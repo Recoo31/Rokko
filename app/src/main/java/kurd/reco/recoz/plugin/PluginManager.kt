@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import android.widget.Toast
 import dalvik.system.PathClassLoader
 import kurd.reco.api.RemoteRepo
-import kurd.reco.recoz.extractDexFileFromZip
+import kurd.reco.recoz.view.settings.plugin.extractDexFileFromZip
 import org.json.JSONObject
 import java.io.File
 import java.util.zip.ZipFile
@@ -18,7 +18,7 @@ data class Plugin(
     val filePath: String
 )
 
-class PluginManager(private val context: Context, ) {
+class PluginManager(private val context: Context) {
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences("plugin_prefs", Context.MODE_PRIVATE)
     private var pluginInstance: RemoteRepo? = null
 

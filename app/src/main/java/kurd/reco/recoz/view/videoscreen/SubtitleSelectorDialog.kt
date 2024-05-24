@@ -2,86 +2,100 @@ package kurd.reco.recoz.view.videoscreen
 
 import android.content.Context
 import androidx.annotation.OptIn
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.C
-import androidx.media3.common.Format
+import androidx.media3.common.TrackGroup
 import androidx.media3.common.TrackSelectionOverride
-import androidx.media3.common.TrackSelectionParameters
+import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 
 @OptIn(UnstableApi::class)
 @Composable
-fun SubtitleSelectorDialog(trackSelector: DefaultTrackSelector, onDismiss: () -> Unit) {
+fun SubtitleSelectorDialog(
+    tracks: Tracks,
+    defaultTrackSelector: DefaultTrackSelector,
+    onDismiss: () -> Unit
+) {
     val context = LocalContext.current
-    val mappedTrackInfo = trackSelector.currentMappedTrackInfo
-    val formats = mappedTrackInfo?.getTrackGroups(C.TRACK_TYPE_TEXT)
+    val trackName = C.TRACK_TYPE_TEXT
 
-    val options = formats?.let { groups ->
-        (0 until groups.length).flatMap { groupIndex ->
-            (0 until groups[groupIndex].length).map { trackIndex ->
-                groups[groupIndex].getFormat(trackIndex)
-            }
-        }.reversed()
-    } ?: emptyList()
+    val textTracks = tracks.groups
+        .filter { it.type == trackName && it.isSupported }
+
+    println("textTracks: $textTracks")
 
     LazyColumn {
-        items(options) { format ->
+        item {
+            val selected = textTracks.isEmpty()
             Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 RadioButton(
-                    selected = false,
+                    selected = selected,
                     onClick = {
-                        applySelectedFormat(trackSelector, format, context)
+                        setSubtitleTrack(defaultTrackSelector, context, false)
                         onDismiss()
                     }
                 )
-                println(format)
-                Text(text = "${format.language}", modifier = Modifier.padding(4.dp))
+                Text(text = "Disable Subtitles")
+            }
+        }
+
+        itemsIndexed(textTracks) { index, trackGroup ->
+            val selected = trackGroup.isSelected
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                RadioButton(
+                    selected = selected,
+                    onClick = {
+                        applySelectedSubtitle(defaultTrackSelector, trackGroup.mediaTrackGroup)
+
+                        onDismiss()
+                    }
+                )
+                Text(text = trackGroup.mediaTrackGroup.getName(trackName, index))
             }
         }
     }
 }
 
 @OptIn(UnstableApi::class)
-private fun applySelectedFormat(
+private fun setSubtitleTrack(trackSelector: DefaultTrackSelector, context: Context, isActive: Boolean) {
+    trackSelector.parameters = DefaultTrackSelector.Parameters.Builder(context)
+        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, !isActive).build()
+}
+
+@OptIn(UnstableApi::class)
+private fun applySelectedSubtitle(
     trackSelector: DefaultTrackSelector,
-    selectedFormat: Format,
-    context: Context
+    trackGroup: TrackGroup,
 ) {
-    val mappedTrackInfo = trackSelector.currentMappedTrackInfo ?: return
-    val parametersBuilder = TrackSelectionParameters.Builder(context)
-    val rendererIndex = C.TRACK_TYPE_TEXT
 
-    for (groupIndex in 0 until mappedTrackInfo.getTrackGroups(rendererIndex).length) {
-        val group = mappedTrackInfo.getTrackGroups(rendererIndex)[groupIndex]
-        for (trackIndex in 0 until group.length) {
-            if (group.getFormat(trackIndex) == selectedFormat) {
-                val trackSelectionOverride = TrackSelectionOverride(group, listOf(trackIndex))
-                parametersBuilder.addOverride(trackSelectionOverride)
-                break
-            }
-        }
-    }
+    val parametersBuilder = trackSelector.parameters.buildUpon()
+    val trackSelectionOverride = TrackSelectionOverride(trackGroup, 0)
 
-    trackSelector.setParameters(parametersBuilder.build())
+    parametersBuilder.setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
+    parametersBuilder.clearOverridesOfType(C.TRACK_TYPE_TEXT)
+    parametersBuilder.addOverride(trackSelectionOverride)
+
+    trackSelector.setParameters(parametersBuilder)
 }

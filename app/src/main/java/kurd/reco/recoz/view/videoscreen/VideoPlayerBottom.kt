@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import kurd.reco.recoz.R
-import kurd.reco.recoz.formatTime
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -28,7 +27,8 @@ fun VideoPlayerBottom(
     currentTime: Long,
     duration: Long,
     isPlaying: Boolean,
-    onClick: () -> Unit,
+    onResizeClick: () -> Unit,
+    onSettingsClick: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -75,7 +75,16 @@ fun VideoPlayerBottom(
                 )
             )
         }
-        IconButton(onClick = { onClick() }) {
+
+        IconButton(onClick = { onResizeClick() }) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_baseline_aspect_ratio_24),
+                contentDescription = null,
+                tint = Color.White
+            )
+        }
+
+        IconButton(onClick = { onSettingsClick() }) {
             Icon(
                 painter = painterResource(id = R.drawable.rounded_video_settings_24),
                 contentDescription = null,

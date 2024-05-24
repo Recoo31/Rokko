@@ -1,6 +1,5 @@
 package kurd.reco.recoz.view.homescreen
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,16 +34,14 @@ import kurd.reco.api.Resource
 import kurd.reco.api.model.HomeItemModel
 import kurd.reco.api.model.HomeScreenModel
 import kurd.reco.recoz.focusScale
-import kurd.reco.recoz.plugin.PluginManager
+import kurd.reco.recoz.view.settings.logs.AppLog
 import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.koinInject
 
 
 @Destination<RootGraph>(start = true)
 @Composable
 fun HomeScreenRoot(navigator: DestinationsNavigator) {
     val viewModel: HomeScreenVM = koinViewModel()
-    val pluginManager: PluginManager = koinInject()
     val movieList by viewModel.moviesList.collectAsState()
     var isError by remember { mutableStateOf(false) }
     var errorText by remember { mutableStateOf("") }
@@ -55,13 +52,11 @@ fun HomeScreenRoot(navigator: DestinationsNavigator) {
                 LoadingBar()
             }
             is Resource.Success -> {
-                HomeScreen(resource.value, navigator)
-            }
+                HomeScreen(resource.value, navigator) }
             is Resource.Failure -> {
                 isError = true
                 errorText = resource.error
-                // Logging the error for future debugging
-                Log.e("HomeScreenRoot", "Error loading movie list: $errorText")
+                AppLog.e("HomeScreenRoot", "Error loading movie list: $errorText")
             }
         }
 

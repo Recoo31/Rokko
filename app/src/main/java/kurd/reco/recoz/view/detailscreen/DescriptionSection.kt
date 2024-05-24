@@ -11,19 +11,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kurd.reco.api.model.DetailScreenModel
 
 @Composable
-fun DescriptionSection(item: DetailScreenModel, expanded: Boolean, onExpandClick: () -> Unit) {
+fun DescriptionSection(
+    item: String,
+    expanded: Boolean,
+    onExpandClick: () -> Unit
+) {
     ElevatedCard(
-        modifier = Modifier
-            .padding(16.dp),
-        onClick = {
-            onExpandClick()
-        }
+        modifier = Modifier.padding(16.dp),
+        onClick = { onExpandClick() }
     ) {
         Text(
-            text = item.description,
+            text = item,
             modifier = Modifier
                 .padding(8.dp)
                 .animateContentSize(animationSpec = tween(200)),

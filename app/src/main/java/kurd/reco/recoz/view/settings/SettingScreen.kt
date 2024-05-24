@@ -27,13 +27,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import kotlinx.coroutines.delay
 import kurd.reco.recoz.plugin.PluginManager
-import kurd.reco.recoz.ui.theme.RecozTheme
+import kurd.reco.recoz.view.settings.logs.LogScreen
 import kurd.reco.recoz.view.settings.plugin.PluginBottomSheet
 import org.koin.compose.koinInject
 
@@ -62,7 +61,7 @@ fun SettingScreen(modifier: Modifier = Modifier) {
 
     val settingsItems = listOf(
         SettingsItemClass(title = "Plugins"),
-        SettingsItemClass(title = "Player"),
+        SettingsItemClass(title = "Logs"),
     )
 
     Column {
@@ -92,8 +91,8 @@ fun SettingScreen(modifier: Modifier = Modifier) {
                 PluginBottomSheet(viewModel, pluginManager)
             }
 
-            "Player" -> {
-                Unit
+            "Logs" -> {
+                LogScreen(viewModel)
             }
         }
     }
@@ -126,12 +125,3 @@ fun SettingsItem(settingsItem: SettingsItemClass, onItemClick: () -> Unit) {
 data class SettingsItemClass(
     val title: String
 )
-
-
-@Preview
-@Composable
-private fun SettingScreenPrev() {
-    RecozTheme {
-        SettingScreen()
-    }
-}

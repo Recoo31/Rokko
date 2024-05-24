@@ -15,16 +15,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
-import kurd.reco.api.model.DetailScreenModel
 
 @Composable
-fun BackImage(item: DetailScreenModel, modifier: Modifier = Modifier) {
-    Box {
+fun BackImage(item: String, modifier: Modifier = Modifier) {
+    Box(modifier = modifier) {
         GlideImage(
-            imageModel = { item.backImage },
-            imageOptions = ImageOptions(
-                contentScale = ContentScale.Fit
-            ),
+            imageModel = { item },
+            imageOptions = ImageOptions(contentScale = ContentScale.Fit),
             loading = {
                 Box(modifier = Modifier.fillMaxSize()) {
                     CircularProgressIndicator(

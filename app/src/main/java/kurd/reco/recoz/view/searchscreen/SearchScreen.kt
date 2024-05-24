@@ -1,6 +1,5 @@
 package kurd.reco.recoz.view.searchscreen
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,6 +42,7 @@ import com.skydoves.landscapist.glide.GlideImage
 import kurd.reco.api.model.SearchModel
 import kurd.reco.recoz.ui.theme.RecozTheme
 import kurd.reco.recoz.view.homescreen.LoadingBar
+import kurd.reco.recoz.view.settings.logs.AppLog
 import org.koin.androidx.compose.koinViewModel
 
 private val TAG: String = "SearchScreen"
@@ -51,7 +51,6 @@ private val TAG: String = "SearchScreen"
 @Composable
 fun SearchScreen(navigator: DestinationsNavigator) {
     var query by remember { mutableStateOf("") }
-    var previousQuery by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     val viewModel: SearchScreenVM = koinViewModel()
 
@@ -84,7 +83,7 @@ fun SearchScreen(navigator: DestinationsNavigator) {
                 onValueChange = {
                     query = it
                     if (query.length > 3) {
-                        Log.i(TAG, "SearchScreen: $query")
+                        AppLog.i(TAG, "Query: $query")
                         viewModel.searchList = emptyList()
                         viewModel.search(query)
                         isLoading = true
