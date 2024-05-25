@@ -1,7 +1,7 @@
 package kurd.reco.api.model
 
 data class PlayDataModel(
-    val url: String,
+    val urls: List<Pair<String, String>>,
     val title: String?,
     val drm: DrmDataModel?,
     val subtitles: List<SubtitleDataModel>?
