@@ -1,4 +1,4 @@
-package kurd.reco.recoz.view.videoscreen
+package kurd.reco.recoz.view.videoscreen.composables
 
 import androidx.annotation.OptIn
 import androidx.compose.foundation.clickable
@@ -27,21 +27,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 
 @OptIn(UnstableApi::class)
 @Composable
 fun SettingsDialog(
-    trackSelector: Tracks,
+    exoPlayer: ExoPlayer,
     defaultTrackSelector: DefaultTrackSelector,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val settings = listOf("Quality", "Audio", "Subtitle")
+    val settings = listOf("Sources","Quality", "Audio", "Subtitle")
     var selectedIndex by remember { mutableIntStateOf(-1) }
     var selectedSetting by remember { mutableStateOf("") }
+    val trackSelector = exoPlayer.currentTracks
 
     Box(
         contentAlignment = Alignment.Center,
@@ -83,7 +84,7 @@ fun SettingsDialog(
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier
-                                .padding(8.dp)
+                                .padding(vertical = 8.dp)
                                 .clickable {
                                     selectedIndex = index
                                     selectedSetting = setting
@@ -95,11 +96,14 @@ fun SettingsDialog(
                                 color = textColor,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier
-                                    .padding(vertical = 8.dp, horizontal = 24.dp)
+                                    .padding(vertical = 4.dp, horizontal = 24.dp)
                                     .align(Alignment.CenterHorizontally)
                             )
                             HorizontalDivider(
-                                modifier = Modifier.fillMaxWidth().height(1.dp).width(48.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(1.dp)
+                                    .width(48.dp),
                                 color = dividerColor
                             )
                         }
@@ -107,6 +111,9 @@ fun SettingsDialog(
                 }
 
                 when (selectedSetting) {
+                    "Sources" -> {
+                        SourceSelectorDialog(exoPlayer, onDismiss)
+                    }
                     "Quality" -> {
                         QualitySelectorDialog(trackSelector, defaultTrackSelector, onDismiss)
                     }

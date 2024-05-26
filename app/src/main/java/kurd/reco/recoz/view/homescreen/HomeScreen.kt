@@ -105,7 +105,11 @@ fun MovieItem(item: HomeItemModel, onItemClick: () -> Unit) {
     ) {
         GlideImage(
             imageModel = { item.poster },
-            loading = { LoadingBar() }
+            loading = {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    LoadingBar()
+                }
+            }
         )
     }
 }

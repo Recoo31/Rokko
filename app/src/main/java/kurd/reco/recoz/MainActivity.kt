@@ -1,5 +1,6 @@
 package kurd.reco.recoz
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.generated.NavGraphs
+import kurd.reco.api.model.PlayDataModel
 import kurd.reco.recoz.ui.theme.RecozTheme
 import kurd.reco.recoz.view.BottomBar
 import org.koin.compose.koinInject
@@ -28,6 +30,7 @@ class MainActivity : ComponentActivity() {
             val viewModel: MainVM = koinInject()
             val navController = rememberNavController()
 
+
             RecozTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
@@ -35,14 +38,19 @@ class MainActivity : ComponentActivity() {
                         BottomBar(navController)
                     },
                 ) { innerPadding ->
-                    //val context = LocalContext.current
-
-//                    val url = "https://bitmovin-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
+//                    val context = LocalContext.current
+//
+//                    val urls = listOf(
+//                        "BitMovin" to "https://bitmovin-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
+//                        "AfCdn" to "https://assets.afcdn.com/video49/20210722/v_645516.m3u8",
+//                        "MuxDev" to "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+//                    )
 //                    val intent = Intent(context, PlayerActivity::class.java)
 //
-//                    viewModel.playDataModel = PlayDataModel(url, null, null, null)
-
+//                    viewModel.playDataModel = PlayDataModel(urls, null, null, null)
+//
 //                    context.startActivity(intent)
+
                     Box(modifier = Modifier.padding(innerPadding)) {
                         DestinationsNavHost(navGraph = NavGraphs.root, navController = navController)
                     }

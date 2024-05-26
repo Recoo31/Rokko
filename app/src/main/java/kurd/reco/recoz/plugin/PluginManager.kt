@@ -15,7 +15,8 @@ data class Plugin(
     val name: String,
     val classPath: String,
     val className: String,
-    val filePath: String
+    val filePath: String,
+    val version: String
 )
 
 class PluginManager(private val context: Context) {
@@ -82,8 +83,9 @@ class PluginManager(private val context: Context) {
                 val name = jsonObj.getString("plugin_name")
                 val classPath = jsonObj.getString("package")
                 val className = jsonObj.getString("package_name")
+                val version = "1"//jsonObj.getString("version")
 
-                return Plugin(id, name, classPath, className, filePath)
+                return Plugin(id, name, classPath, className, filePath, version)
             }
         } catch (e: Exception) {
             e.printStackTrace()

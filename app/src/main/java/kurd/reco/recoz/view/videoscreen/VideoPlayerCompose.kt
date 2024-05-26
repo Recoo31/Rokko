@@ -42,7 +42,7 @@ fun VideoPlayerCompose(item: PlayDataModel) {
             .setTrackSelector(trackSelector)
             .build()
             .apply {
-                val mediaItem = createMediaItem(item)
+                val mediaItem = createMediaItem(item, item.urls.first().second)
                 setMediaItem(mediaItem)
                 prepare()
                 playWhenReady = true

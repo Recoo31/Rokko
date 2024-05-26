@@ -1,4 +1,4 @@
-package kurd.reco.recoz.view.videoscreen
+package kurd.reco.recoz.view.videoscreen.composables
 
 import android.content.Context
 import androidx.annotation.OptIn
@@ -15,11 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.C
-import androidx.media3.common.TrackGroup
-import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
+import kurd.reco.recoz.view.videoscreen.applySelectedTrack
+import kurd.reco.recoz.view.videoscreen.getName
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -67,8 +67,8 @@ fun SubtitleSelectorDialog(
                 RadioButton(
                     selected = selected,
                     onClick = {
-                        applySelectedSubtitle(defaultTrackSelector, trackGroup.mediaTrackGroup)
-
+                        setSubtitleTrack(defaultTrackSelector, context, true)
+                        applySelectedTrack(defaultTrackSelector, trackGroup.mediaTrackGroup, 0, C.TRACK_TYPE_TEXT)
                         onDismiss()
                     }
                 )
@@ -82,20 +82,4 @@ fun SubtitleSelectorDialog(
 private fun setSubtitleTrack(trackSelector: DefaultTrackSelector, context: Context, isActive: Boolean) {
     trackSelector.parameters = DefaultTrackSelector.Parameters.Builder(context)
         .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, !isActive).build()
-}
-
-@OptIn(UnstableApi::class)
-private fun applySelectedSubtitle(
-    trackSelector: DefaultTrackSelector,
-    trackGroup: TrackGroup,
-) {
-
-    val parametersBuilder = trackSelector.parameters.buildUpon()
-    val trackSelectionOverride = TrackSelectionOverride(trackGroup, 0)
-
-    parametersBuilder.setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-    parametersBuilder.clearOverridesOfType(C.TRACK_TYPE_TEXT)
-    parametersBuilder.addOverride(trackSelectionOverride)
-
-    trackSelector.setParameters(parametersBuilder)
 }

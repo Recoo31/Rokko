@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,6 +44,11 @@ import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import kotlinx.coroutines.delay
 import kurd.reco.api.model.PlayDataModel
+import kurd.reco.recoz.view.videoscreen.composables.GestureAdjuster
+import kurd.reco.recoz.view.videoscreen.composables.SettingsDialog
+import kurd.reco.recoz.view.videoscreen.composables.SourceSelectorDialog
+import kurd.reco.recoz.view.videoscreen.composables.VideoPlayerBottom
+import kurd.reco.recoz.view.videoscreen.composables.VideoSeekControls
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -83,7 +89,7 @@ fun VideoControlBar(
                 exoPlayer.release()
 
                 val intent = Intent(Intent.ACTION_VIEW).apply {
-                    setDataAndType(Uri.parse(item.url), "video/*")
+                    setDataAndType(Uri.parse(item.urls.first().second), "video/*")
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }
 
@@ -128,6 +134,12 @@ fun VideoControlBar(
                         .fillMaxSize()
                         .background(Color.Black.copy(alpha = 0.5f))
                 ) {
+                    GestureAdjuster(modifier = Modifier.fillMaxSize(), context = context) {
+                        exoPlayer.setPlaybackSpeed(2f)
+                    }
+
+                    VideoSeekControls(exoPlayer)
+
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -145,11 +157,15 @@ fun VideoControlBar(
                                 )
                             }
                             Text(
-                                text = "${videoSize.height}p",
+                                text = "${videoSize.width}x${videoSize.height}",
                                 style = MaterialTheme.typography.titleMedium,
                             )
                         }
                     }
+
+
+
+//                    VideoSeekControls(exoPlayer)
 
                     Box(
                         modifier = Modifier.fillMaxSize(),
@@ -174,9 +190,10 @@ fun VideoControlBar(
                 }
                 if (showSettingsDialog) {
                     SettingsDialog(
-                        exoPlayer.currentTracks,
+                        exoPlayer,
                         trackSelector,
-                        onDismiss = { showSettingsDialog = false })
+                        onDismiss = { showSettingsDialog = false }
+                    )
                 }
             }
         }

@@ -1,4 +1,4 @@
-package kurd.reco.recoz.view.videoscreen
+package kurd.reco.recoz.view.videoscreen.composables
 
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Row
@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import kurd.reco.recoz.R
+import kurd.reco.recoz.view.videoscreen.formatTime
 
 @OptIn(UnstableApi::class)
 @Composable
