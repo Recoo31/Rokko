@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,9 +55,11 @@ fun HomeScreenRoot(navigator: DestinationsNavigator) {
             is Resource.Success -> {
                 HomeScreen(resource.value, navigator) }
             is Resource.Failure -> {
-                isError = true
-                errorText = resource.error
-                AppLog.e("HomeScreenRoot", "Error loading movie list: $errorText")
+                LaunchedEffect(resource) {
+                    isError = true
+                    errorText = resource.error
+                    AppLog.e("HomeScreenRoot", "Error loading movie list: $errorText")
+                }
             }
         }
 

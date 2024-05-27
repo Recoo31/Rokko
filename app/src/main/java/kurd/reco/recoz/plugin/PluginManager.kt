@@ -1,109 +1,49 @@
 package kurd.reco.recoz.plugin
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.widget.Toast
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dalvik.system.PathClassLoader
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kurd.reco.api.RemoteRepo
+import kurd.reco.recoz.view.settings.logs.AppLog
 import kurd.reco.recoz.view.settings.plugin.extractDexFileFromZip
-import org.json.JSONObject
-import java.io.File
-import java.util.zip.ZipFile
 
-data class Plugin(
-    val id: String,
-    val name: String,
-    val classPath: String,
-    val className: String,
-    val filePath: String,
-    val version: String
-)
-
-class PluginManager(private val context: Context) {
-    private val sharedPreferences: SharedPreferences = context.getSharedPreferences("plugin_prefs", Context.MODE_PRIVATE)
+class PluginManager(private val pluginDao: PluginDao, appContext: Context) : ViewModel() {
+    private val context = appContext.applicationContext
     private var pluginInstance: RemoteRepo? = null
 
     init {
-        val update = checkUpdate()
-        if (!update) {
-            loadLastSelectedPlugin()
+        viewModelScope.launch(Dispatchers.IO) {
+            checkPluginUpdate()
         }
+        loadLastSelectedPlugin()
     }
 
-
-    fun checkUpdate(): Boolean {
-        return false
-    }
-
-    fun addPlugin(plugin: Plugin) {
-        sharedPreferences.edit().putString(plugin.id, plugin.filePath).apply()
+    private suspend fun checkPluginUpdate() {
+        getAllPlugins().forEach { plugin ->
+            checkUpdate(plugin, pluginDao)
+        }
     }
 
     fun selectPlugin(plugin: Plugin) {
+        pluginDao.clearSelectedPlugin()
+        AppLog.d("PluginManager", "selectPlugin: ${plugin.id}")
+        pluginDao.selectPlugin(plugin.id)
         pluginInstance = loadPlugin(plugin)
-        sharedPreferences.edit().putString("last_selected_plugin", plugin.id).apply()
     }
 
-    fun getLastSelectedPluginId(): String? = sharedPreferences.getString("last_selected_plugin", null)
-
-    fun getAllPlugins(): List<Plugin> {
-        val plugins = mutableListOf<Plugin>()
-        val path = context.filesDir.path
-
-        val zipFiles = File(path).listFiles { file ->
-            file.isFile && file.name.endsWith(".krd")
-        }
-
-        zipFiles?.forEach { file ->
-            try {
-                val plugin = getPluginFromManifest(file.absolutePath)
-                plugin?.let {
-                    plugins.add(it)
-                    addPlugin(it)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                Toast.makeText(context, "${file.nameWithoutExtension} | Error", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        return plugins
+    fun getLastSelectedPluginId(): String? {
+        return pluginDao.getSelectedPlugin()?.id
     }
 
-    private fun getPluginFromManifest(filePath: String): Plugin? {
-        val zipFile = File(filePath)
-        try {
-            val zip = ZipFile(zipFile)
-            val json = zip.getEntry("manifest.json")
-
-            zip.getInputStream(json).bufferedReader().use {
-                val string = it.readText()
-                val jsonObj = JSONObject(string)
-                val id = jsonObj.getString("plugin_id")
-                val name = jsonObj.getString("plugin_name")
-                val classPath = jsonObj.getString("package")
-                val className = jsonObj.getString("package_name")
-                val version = "1"//jsonObj.getString("version")
-
-                return Plugin(id, name, classPath, className, filePath, version)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(context, "Error while loading plugin from manifest", Toast.LENGTH_SHORT).show()
-            return null
-        }
-    }
+    fun getAllPlugins(): List<Plugin> = pluginDao.getAllPlugins()
 
     private fun loadLastSelectedPlugin() {
-        val lastSelectedPluginId = sharedPreferences.getString("last_selected_plugin", null)
-        lastSelectedPluginId?.let { pluginId ->
-            val filePath = sharedPreferences.getString(pluginId, null)
-            filePath?.let { pluginFilePath ->
-                val plugin = getPluginFromManifest(pluginFilePath)
-                plugin?.let {
-                    pluginInstance = loadPlugin(it)
-                }
-            }
+        pluginDao.getSelectedPlugin()?.let {
+            AppLog.d("PluginManager", "Selected plugin: ${it.name}")
+            pluginInstance = loadPlugin(it)
         }
     }
 
@@ -113,8 +53,7 @@ class PluginManager(private val context: Context) {
             val className = "${plugin.classPath}.${plugin.className}"
             val loader = PathClassLoader(file.absolutePath, context.classLoader)
             try {
-                val pluginClass = loader.loadClass(className)
-                pluginClass.getDeclaredConstructor().newInstance() as? RemoteRepo
+                loader.loadClass(className).getDeclaredConstructor().newInstance() as? RemoteRepo
             } catch (e: ClassNotFoundException) {
                 println("Class not found: $className")
                 null

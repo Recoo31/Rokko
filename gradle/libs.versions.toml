@@ -1,7 +1,7 @@
 [versions]
 agp = "8.5.0-alpha05"
 destinationsCore = "2.1.0-beta03"
-kotlin = "1.9.22"
+kotlin = "2.0.0"
 jacksonModuleKotlin = "2.17.0"
 landscapistGlide = "2.3.3"
 nicehttp = "0.4.11"
@@ -9,7 +9,7 @@ coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
-lifecycleRuntimeKtx = "2.7.0"
+lifecycleRuntimeKtx = "2.8.0"
 activityCompose = "1.9.0"
 composeBom = "2024.05.00"
 koinAndroidxCompose = "3.5.3"
@@ -17,9 +17,12 @@ appcompat = "1.6.1"
 material = "1.12.0"
 media3Exoplayer = "1.3.1"
 rokko-api = "55bca1c358"
+roomRuntime = "2.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 destinations-core = { module = "io.github.raamcosta.compose-destinations:core", version.ref = "destinationsCore" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -54,4 +57,5 @@ rokko-api = { module = "com.github.Recoo31:Rokko", version.ref = "rokko-api" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 

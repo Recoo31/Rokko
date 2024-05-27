@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,7 +45,6 @@ import kotlinx.coroutines.delay
 import kurd.reco.api.model.PlayDataModel
 import kurd.reco.recoz.view.videoscreen.composables.GestureAdjuster
 import kurd.reco.recoz.view.videoscreen.composables.SettingsDialog
-import kurd.reco.recoz.view.videoscreen.composables.SourceSelectorDialog
 import kurd.reco.recoz.view.videoscreen.composables.VideoPlayerBottom
 import kurd.reco.recoz.view.videoscreen.composables.VideoSeekControls
 
@@ -65,7 +63,7 @@ fun VideoControlBar(
     var showSettingsDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
-    var _resizeMode by remember { mutableIntStateOf(AspectRatioFrameLayout.RESIZE_MODE_FIT) }
+    var _resizeMode by remember { mutableIntStateOf(AspectRatioFrameLayout.RESIZE_MODE_ZOOM) }
 
 
     LaunchedEffect(exoPlayer) {

@@ -1,6 +1,5 @@
 package kurd.reco.recoz
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,11 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.generated.NavGraphs
-import kurd.reco.api.model.PlayDataModel
 import kurd.reco.recoz.ui.theme.RecozTheme
 import kurd.reco.recoz.view.BottomBar
 import org.koin.compose.koinInject
