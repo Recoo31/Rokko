@@ -19,8 +19,8 @@ class SearchScreenVM(private val pluginManager: PluginManager): ViewModel() {
             try {
                 val response = pluginManager.getSelectedPlugin().search(query)
                 searchList = response
-            } catch (e: Exception) {
-                e.printStackTrace()
+            } catch (t: Throwable) {
+                t.printStackTrace()
             }
         }
     }

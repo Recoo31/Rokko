@@ -29,9 +29,9 @@ class HomeScreenVM(private val pluginManager: PluginManager): ViewModel() {
             try {
                 val response = pluginManager.getSelectedPlugin().getHomeScreenItems()
                 moviesList.value = response
-            } catch (e: Exception) {
-                e.printStackTrace()
-                moviesList.value = Resource.Failure(e.localizedMessage ?: e.message ?: "Unknown Error")
+            } catch (t: Throwable) {
+                t.printStackTrace()
+                moviesList.value = Resource.Failure(t.localizedMessage ?: t.message ?: "Unknown Error")
             }
         }
     }
@@ -42,7 +42,7 @@ class HomeScreenVM(private val pluginManager: PluginManager): ViewModel() {
                 val response = pluginManager.getSelectedPlugin().getUrl(id)
                 _clickedItem.value = response
                 AppLog.i(TAG, "getUrl: $response")
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 e.printStackTrace()
                 _clickedItem.value = Resource.Failure(e.localizedMessage ?: e.message ?: "Unknown Error")
             }

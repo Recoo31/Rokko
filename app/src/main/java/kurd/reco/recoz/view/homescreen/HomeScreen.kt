@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -32,6 +33,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.DetailScreenRootDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 import kurd.reco.api.Resource
 import kurd.reco.api.model.HomeItemModel
@@ -121,14 +123,16 @@ fun HomeScreen(movieList: List<HomeScreenModel>, viewModel: HomeScreenVM, naviga
             LazyRow {
                 items(item.contents) { movie ->
                     MovieItem(movie) {
-                        if (movie.isLiveTv) viewModel.getUrl(movie.id)
-
-                        navigator.navigate(
-                            DetailScreenRootDestination(
-                                movie.id.toString(),
-                                movie.isSeries
+                        if (movie.isLiveTv) {
+                            viewModel.getUrl(movie.id)
+                        } else {
+                            navigator.navigate(
+                                DetailScreenRootDestination(
+                                    movie.id.toString(),
+                                    movie.isSeries
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }
@@ -151,7 +155,10 @@ fun MovieItem(item: HomeItemModel, onItemClick: () -> Unit) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     LoadingBar()
                 }
-            }
+            },
+            imageOptions = ImageOptions(
+                contentScale = ContentScale.Fit
+            )
         )
     }
 }

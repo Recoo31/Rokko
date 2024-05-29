@@ -31,7 +31,7 @@ class DetailScreenVM(private val pluginManager: PluginManager) : ViewModel() {
                 AppLog.d(TAG, "getMovie: ID: $id | IsSeries: $isSeries")
                 val response = pluginManager.getSelectedPlugin().getDetailScreenItems(id, isSeries)
                 _item.value = response
-           } catch (e: Exception) {
+           } catch (e: Throwable) {
                 e.printStackTrace()
                 _item.value = Resource.Failure(e.localizedMessage ?: e.message ?: "Unknown Error")
             }
@@ -44,7 +44,7 @@ class DetailScreenVM(private val pluginManager: PluginManager) : ViewModel() {
                 val response = pluginManager.getSelectedPlugin().getUrl(id)
                 _clickedItem.value = response
                 AppLog.i(TAG, "getUrl: $response")
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 e.printStackTrace()
                 _clickedItem.value = Resource.Failure(e.localizedMessage ?: e.message ?: "Unknown Error")
             }

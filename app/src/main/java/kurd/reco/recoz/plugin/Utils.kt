@@ -27,7 +27,7 @@ fun getPluginFromManifest(filePath: String, url: String, version: String): Plugi
                 filePath, version, url
             )
         }
-    } catch (e: Exception) {
+    } catch (e: Throwable) {
         e.printStackTrace()
         AppLog.e(TAG, e.localizedMessage ?: e.message ?: "Unknown error")
         null
