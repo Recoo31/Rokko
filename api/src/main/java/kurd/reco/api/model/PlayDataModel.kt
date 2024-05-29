@@ -4,7 +4,8 @@ data class PlayDataModel(
     val urls: List<Pair<String, String>>,
     val title: String?,
     val drm: DrmDataModel?,
-    val subtitles: List<SubtitleDataModel>?
+    val subtitles: List<SubtitleDataModel>?,
+    val streamHeaders: Map<String, String>?,
 )
 
 data class DrmDataModel(
