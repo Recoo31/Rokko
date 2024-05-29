@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kurd.reco.api.Resource
 import kurd.reco.api.model.DetailScreenModel
@@ -14,10 +13,10 @@ import kurd.reco.recoz.view.settings.logs.AppLog
 
 class DetailScreenVM(private val pluginManager: PluginManager) : ViewModel() {
     private val _item: MutableStateFlow<Resource<DetailScreenModel>> = MutableStateFlow(Resource.Loading)
-    val item: StateFlow<Resource<DetailScreenModel>> = _item
+    val item get() = _item
 
     private val _clickedItem: MutableStateFlow<Resource<PlayDataModel>> = MutableStateFlow(Resource.Loading)
-    val clickedItem: StateFlow<Resource<PlayDataModel>> = _clickedItem
+    val clickedItem get() = _clickedItem
 
     val seriesList by lazy {
         pluginManager.getSelectedPlugin().seriesList

@@ -58,6 +58,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(project(":api"))
 //    implementation(libs.androidx.navigation.runtime.ktx)
 //    implementation(libs.androidx.navigation.compose)
     testImplementation(libs.junit)
@@ -91,8 +92,6 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer.hls)
     implementation(libs.androidx.media3.exoplayer.dash)
     implementation(libs.androidx.media3.session)
-
-    implementation(libs.rokko.api)
 
     //Room-DB
     implementation(libs.androidx.room.runtime)

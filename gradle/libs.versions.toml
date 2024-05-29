@@ -16,7 +16,6 @@ koinAndroidxCompose = "3.5.3"
 appcompat = "1.6.1"
 material = "1.12.0"
 media3Exoplayer = "1.3.1"
-rokko-api = "55bca1c358"
 roomRuntime = "2.6.1"
 
 [libraries]
@@ -50,7 +49,6 @@ androidx-media3-exoplayer-dash = { module = "androidx.media3:media3-exoplayer-da
 androidx-media3-exoplayer-hls = { module = "androidx.media3:media3-exoplayer-hls", version.ref = "media3Exoplayer" }
 androidx-media3-session = { module = "androidx.media3:media3-session", version.ref = "media3Exoplayer" }
 androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3Exoplayer" }
-rokko-api = { module = "com.github.Recoo31:Rokko", version.ref = "rokko-api" }
 
 
 [plugins]

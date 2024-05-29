@@ -15,20 +15,20 @@ import androidx.media3.common.MimeTypes
 import androidx.media3.common.TrackGroup
 import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.datasource.HttpDataSource
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import kurd.reco.api.model.DrmDataModel
 import kurd.reco.api.model.PlayDataModel
 import kurd.reco.api.model.SubtitleDataModel
 import java.util.Locale
 
-fun setSubtitle(item: SubtitleDataModel): MediaItem.SubtitleConfiguration {
-    val assetSrtUri = Uri.parse((item.url))
-    val subtitle = MediaItem.SubtitleConfiguration.Builder(assetSrtUri)
-        .setMimeType(MimeTypes.TEXT_VTT)
-        .setLanguage(item.language)
-        .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
-        .build()
-    return subtitle
+
+@OptIn(UnstableApi::class)
+fun createHttpDataSourceFactory(headers: Map<String, String>): HttpDataSource.Factory {
+    return DefaultHttpDataSource.Factory().apply {
+        setDefaultRequestProperties(headers)
+    }
 }
 
 fun createMediaItem(item: PlayDataModel, url: String): MediaItem {
@@ -45,8 +45,6 @@ fun createMediaItem(item: PlayDataModel, url: String): MediaItem {
     }.build()
 }
 
-
-
 fun createDrmConfiguration(drm: DrmDataModel): MediaItem.DrmConfiguration {
     return MediaItem.DrmConfiguration.Builder(C.WIDEVINE_UUID)
         .setLicenseUri(drm.licenseUrl)
@@ -56,6 +54,16 @@ fun createDrmConfiguration(drm: DrmDataModel): MediaItem.DrmConfiguration {
             }
         }
         .build()
+}
+
+fun setSubtitle(item: SubtitleDataModel): MediaItem.SubtitleConfiguration {
+    val assetSrtUri = Uri.parse((item.url))
+    val subtitle = MediaItem.SubtitleConfiguration.Builder(assetSrtUri)
+        .setMimeType(MimeTypes.TEXT_VTT)
+        .setLanguage(item.language)
+        .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
+        .build()
+    return subtitle
 }
 
 @UnstableApi

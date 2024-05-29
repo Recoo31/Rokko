@@ -13,7 +13,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.media3.common.C
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import kurd.reco.api.model.PlayDataModel
 
@@ -40,6 +42,14 @@ fun VideoPlayerCompose(item: PlayDataModel) {
     val exoPlayer = remember {
         ExoPlayer.Builder(context)
             .setTrackSelector(trackSelector)
+            .run {
+                if (item.streamHeaders != null) {
+                    val httpDataSourceFactory = createHttpDataSourceFactory(item.streamHeaders!!)
+                    val dataSourceFactory =
+                        DefaultDataSource.Factory(context, httpDataSourceFactory)
+                    setMediaSourceFactory(DefaultMediaSourceFactory(dataSourceFactory))
+                } else this
+            }
             .build()
             .apply {
                 val mediaItem = createMediaItem(item, item.urls.first().second)

@@ -1,4 +1,4 @@
-package kurd.reco.recoz.view.detailscreen
+package kurd.reco.recoz.view.detailscreen.composables
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke

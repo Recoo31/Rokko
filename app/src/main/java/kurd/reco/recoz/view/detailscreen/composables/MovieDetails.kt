@@ -1,4 +1,4 @@
-package kurd.reco.recoz.view.detailscreen
+package kurd.reco.recoz.view.detailscreen.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

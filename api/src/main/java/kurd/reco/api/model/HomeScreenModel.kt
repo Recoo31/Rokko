@@ -9,4 +9,5 @@ data class HomeItemModel(
     val id: Any,
     val poster: String,
     val isSeries: Boolean,
+    val isLiveTv: Boolean
 )

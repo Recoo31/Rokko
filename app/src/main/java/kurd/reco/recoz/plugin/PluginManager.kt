@@ -19,6 +19,16 @@ class PluginManager(private val pluginDao: PluginDao, appContext: Context) : Vie
             checkPluginUpdate()
         }
         loadLastSelectedPlugin()
+//        val plugin = Plugin(
+//            id = "digiturk",
+//            name = "Digiturk",
+//            classPath = "kurd.reco.digiturk",
+//            className = "Digiturk",
+//            version = "1",
+//            downloadUrl = "https://raw.githubusercontent.com/Recoo31/RoxioPlugins/builds/plugins.json",
+//            filePath = "/data/user/0/kurd.reco.recoz/files/Digiturk.krd"
+//        )
+//        pluginDao.insertPlugin(plugin)
     }
 
     private suspend fun checkPluginUpdate() {

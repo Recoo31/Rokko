@@ -34,6 +34,11 @@ import kurd.reco.api.Resource
 import kurd.reco.api.model.DetailScreenModel
 import kurd.reco.recoz.MainVM
 import kurd.reco.recoz.PlayerActivity
+import kurd.reco.recoz.view.detailscreen.composables.BackImage
+import kurd.reco.recoz.view.detailscreen.composables.DescriptionSection
+import kurd.reco.recoz.view.detailscreen.composables.MovieDetails
+import kurd.reco.recoz.view.detailscreen.composables.SeasonItem
+import kurd.reco.recoz.view.detailscreen.composables.SeasonsSelector
 import kurd.reco.recoz.view.homescreen.LoadingBar
 import kurd.reco.recoz.view.settings.logs.AppLog
 import org.koin.androidx.compose.koinViewModel
@@ -114,8 +119,10 @@ fun DetailScreen(
             context.startActivity(intent)
         }
         is Resource.Failure -> {
-            isError = true
-            errorText = resource.error
+            LaunchedEffect(resource) {
+                isError = true
+                errorText = resource.error
+            }
         }
         is Resource.Loading -> Unit
     }

@@ -1,5 +1,6 @@
 package kurd.reco.recoz.view.homescreen
 
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -34,9 +36,12 @@ import com.skydoves.landscapist.glide.GlideImage
 import kurd.reco.api.Resource
 import kurd.reco.api.model.HomeItemModel
 import kurd.reco.api.model.HomeScreenModel
+import kurd.reco.recoz.MainVM
+import kurd.reco.recoz.PlayerActivity
 import kurd.reco.recoz.focusScale
 import kurd.reco.recoz.view.settings.logs.AppLog
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 
 @Destination<RootGraph>(start = true)
@@ -53,7 +58,7 @@ fun HomeScreenRoot(navigator: DestinationsNavigator) {
                 LoadingBar()
             }
             is Resource.Success -> {
-                HomeScreen(resource.value, navigator) }
+                HomeScreen(resource.value, viewModel, navigator) }
             is Resource.Failure -> {
                 LaunchedEffect(resource) {
                     isError = true
@@ -70,7 +75,39 @@ fun HomeScreenRoot(navigator: DestinationsNavigator) {
 }
 
 @Composable
-fun HomeScreen(movieList: List<HomeScreenModel>, navigator: DestinationsNavigator) {
+fun HomeScreen(movieList: List<HomeScreenModel>, viewModel: HomeScreenVM, navigator: DestinationsNavigator) {
+    val clickedItem by viewModel.clickedItem.collectAsState()
+    var isError by remember { mutableStateOf(false) }
+    var errorText by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val mainVM: MainVM = koinInject()
+
+    if (isError) {
+        println("Error: $errorText")
+        Text(
+            text = errorText,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 16.sp,
+            textAlign = TextAlign.Center
+        )
+    }
+
+    when (val resource = clickedItem) {
+        is Resource.Success -> {
+            val playData = resource.value
+            mainVM.playDataModel = playData
+            val intent = Intent(context, PlayerActivity::class.java)
+            context.startActivity(intent)
+        }
+        is Resource.Failure -> {
+            LaunchedEffect(resource) {
+                isError = true
+                errorText = resource.error
+            }
+        }
+        is Resource.Loading -> Unit
+    }
+
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(movieList) { item ->
             Text(
@@ -84,6 +121,8 @@ fun HomeScreen(movieList: List<HomeScreenModel>, navigator: DestinationsNavigato
             LazyRow {
                 items(item.contents) { movie ->
                     MovieItem(movie) {
+                        if (movie.isLiveTv) viewModel.getUrl(movie.id)
+
                         navigator.navigate(
                             DetailScreenRootDestination(
                                 movie.id.toString(),
