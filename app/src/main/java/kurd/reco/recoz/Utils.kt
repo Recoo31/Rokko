@@ -1,5 +1,7 @@
 package kurd.reco.recoz
 
+import android.content.Context
+import android.content.pm.PackageManager
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -52,5 +54,14 @@ fun Modifier.focusScale(
             scaleX = scale
             scaleY = scale
         }
+    }
+}
+
+fun Context.getAppVersion(): String {
+    return try {
+        val packageInfo = packageManager.getPackageInfo(packageName, 0)
+        packageInfo.versionName ?: "Unknown"
+    } catch (e: PackageManager.NameNotFoundException) {
+        "Unknown"
     }
 }

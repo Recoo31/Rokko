@@ -19,7 +19,6 @@ import java.io.File
 
 class SettingsVM(private val pluginDao: PluginDao) : ViewModel() {
     var showBottomSheet by mutableStateOf(false)
-    var showDeleteMode by mutableStateOf(false)
     var selectedItem by mutableStateOf("")
 
     fun download(url: String, context: Context) {

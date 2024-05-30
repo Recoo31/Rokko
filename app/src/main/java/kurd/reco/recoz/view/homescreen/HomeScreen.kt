@@ -50,6 +50,8 @@ import org.koin.compose.koinInject
 @Composable
 fun HomeScreenRoot(navigator: DestinationsNavigator) {
     val viewModel: HomeScreenVM = koinViewModel()
+    val mainVM: MainVM = koinInject()
+    val context = LocalContext.current
     val movieList by viewModel.moviesList.collectAsState()
     var isError by remember { mutableStateOf(false) }
     var errorText by remember { mutableStateOf("") }

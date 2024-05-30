@@ -9,10 +9,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.generated.NavGraphs
 import kurd.reco.recoz.ui.theme.RecozTheme
+import kurd.reco.recoz.view.AppUpdateDialog
 import kurd.reco.recoz.view.BottomBar
 import org.koin.compose.koinInject
 
@@ -26,8 +28,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             val viewModel: MainVM = koinInject()
             val navController = rememberNavController()
-
-
             RecozTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
@@ -35,7 +35,12 @@ class MainActivity : ComponentActivity() {
                         BottomBar(navController)
                     },
                 ) { innerPadding ->
-//                    val context = LocalContext.current
+                    val context = LocalContext.current
+                    viewModel.checkAppUpdate(context)
+
+                    AppUpdateDialog(viewModel) {
+                        viewModel.showUpdateDialog = false
+                    }
 //
 //                    val urls = listOf(
 //                        "BitMovin" to "https://bitmovin-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
