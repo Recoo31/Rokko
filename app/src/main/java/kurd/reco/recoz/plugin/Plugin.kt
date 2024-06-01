@@ -14,3 +14,8 @@ data class Plugin(
     val downloadUrl: String = "",
     val isSelected: Boolean = false
 )
+
+@Entity(tableName = "deleted_plugins")
+data class DeletedPlugin(
+    @PrimaryKey val id: String
+)

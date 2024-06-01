@@ -1,8 +1,9 @@
 {
-  "version": 1.0,
-  "downloadUrl": "link",
+  "version": 1.1,
+  "downloadUrl": "https://github.com/Recoo31/Rokko/releases/download/1.1/app-release.apk",
   "changeLog": [
     "Added app update system",
-    "Fixed some bugs"
+    "Added plugin update system",
+    "Fixed subtitle position"
   ]
 }

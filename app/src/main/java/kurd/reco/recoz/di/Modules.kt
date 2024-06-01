@@ -3,6 +3,8 @@ package kurd.reco.recoz.di
 import android.app.Application
 import androidx.room.Room
 import kurd.reco.recoz.MainVM
+import kurd.reco.recoz.plugin.DeletedPluginDao
+import kurd.reco.recoz.plugin.MIGRATION_1_2
 import kurd.reco.recoz.plugin.PluginDao
 import kurd.reco.recoz.plugin.PluginDatabase
 import kurd.reco.recoz.plugin.PluginManager
@@ -18,20 +20,23 @@ fun provideDataBase(application: Application): PluginDatabase =
         application,
         PluginDatabase::class.java,
         "plugin_database"
-    ).allowMainThreadQueries().build()
+    ).allowMainThreadQueries().addMigrations(MIGRATION_1_2).build()
 
-fun provideDao(pluginDataBase: PluginDatabase): PluginDao = pluginDataBase.pluginDao()
+fun providePluginDao(pluginDataBase: PluginDatabase): PluginDao = pluginDataBase.pluginDao()
+
+fun provideDeletedPluginDao(pluginDataBase: PluginDatabase): DeletedPluginDao = pluginDataBase.deletedPluginDao()
 
 val dataBaseModule = module {
     single { provideDataBase(get()) }
-    single { provideDao(get()) }
+    single { providePluginDao(get()) }
+    single { provideDeletedPluginDao(get()) }
 }
 
 val viewModelModule = module {
-    single { PluginManager(get(), get()) }
+    single { PluginManager(get(), get(), get()) }
     single { MainVM() }
     viewModel { HomeScreenVM(get()) }
     viewModel { DetailScreenVM(get()) }
     viewModel { SearchScreenVM(get()) }
-    viewModel { SettingsVM(get()) }
+    viewModel { SettingsVM(get(), get()) }
 }

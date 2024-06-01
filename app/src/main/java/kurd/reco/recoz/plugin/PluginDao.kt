@@ -29,3 +29,18 @@ interface PluginDao {
     @Query("SELECT * FROM plugins WHERE isSelected = 1 LIMIT 1")
     fun getSelectedPlugin(): Plugin?
 }
+
+@Dao
+interface DeletedPluginDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertDeletedPlugin(deletedPlugin: DeletedPlugin)
+
+    @Query("SELECT * FROM deleted_plugins WHERE id = :pluginId")
+    fun getDeletedPluginById(pluginId: String): DeletedPlugin?
+
+    @Query("SELECT * FROM deleted_plugins")
+    fun getAllDeletedPlugins(): List<DeletedPlugin>
+
+    @Query("DELETE FROM deleted_plugins WHERE id = :pluginId")
+    fun deleteDeletedPlugin(pluginId: String)
+}

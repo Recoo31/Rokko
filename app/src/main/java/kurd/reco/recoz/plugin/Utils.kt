@@ -34,12 +34,35 @@ fun getPluginFromManifest(filePath: String, url: String, version: String): Plugi
     }
 }
 
-suspend fun checkUpdate(plugin: Plugin, pluginDao: PluginDao) {
-    val response = app.get(plugin.downloadUrl).parsed<PluginResponseRoot>()
-    response.plugins.firstOrNull { it.id == plugin.id }?.let { outdated ->
+
+suspend fun checkUpdate(plugin: Plugin, pluginDao: PluginDao, remotePlugins: List<PluginResponse>) {
+    remotePlugins.firstOrNull { it.id == plugin.id }?.let { outdated ->
         if (outdated.version != plugin.version) {
             AppLog.i(TAG, "Outdated plugin: ${plugin.name}")
+            if (plugin.id == pluginDao.getSelectedPlugin()?.id) pluginDao.clearSelectedPlugin()
             updatePlugin(plugin.copy(version = outdated.version), pluginDao, outdated.url)
+        }
+    }
+}
+
+suspend fun checkAndDownloadNewPlugins(downloadUrl: String, remotePlugins: List<PluginResponse>, pluginDao: PluginDao, deletedPlugin: DeletedPluginDao, outputDir: String) {
+    val localPlugins = pluginDao.getAllPlugins().filter { it.downloadUrl == downloadUrl }
+    val deletedPlugins = deletedPlugin.getAllDeletedPlugins().map { it.id }
+
+    remotePlugins.forEach { remotePlugin ->
+        if (localPlugins.none { it.id == remotePlugin.id.lowercase() } && !deletedPlugins.contains(remotePlugin.id.lowercase())) {
+            AppLog.i(TAG, "New plugin found: ${remotePlugin.name}")
+
+            val uri = remotePlugin.url
+            val filename = uri.substring(uri.lastIndexOf('/') + 1)
+            val filePath = "$outputDir/$filename"
+            val result = downloadPlugin(uri, filePath)
+            if (result) {
+                val newPlugin = getPluginFromManifest(filePath, downloadUrl, remotePlugin.version)
+                newPlugin?.let { pl ->
+                    pluginDao.insertPlugin(pl)
+                }
+            }
         }
     }
 }

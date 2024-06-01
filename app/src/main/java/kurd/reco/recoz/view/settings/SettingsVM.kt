@@ -9,36 +9,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kurd.reco.api.app
+import kurd.reco.recoz.plugin.DeletedPlugin
+import kurd.reco.recoz.plugin.DeletedPluginDao
 import kurd.reco.recoz.plugin.Plugin
 import kurd.reco.recoz.plugin.PluginDao
-import kurd.reco.recoz.plugin.PluginResponseRoot
-import kurd.reco.recoz.plugin.downloadPlugin
-import kurd.reco.recoz.plugin.getPluginFromManifest
+import kurd.reco.recoz.view.settings.plugin.downloadPlugins
 import java.io.File
 
-class SettingsVM(private val pluginDao: PluginDao) : ViewModel() {
+class SettingsVM(private val pluginDao: PluginDao, private val deletedPluginDao: DeletedPluginDao) : ViewModel() {
     var showBottomSheet by mutableStateOf(false)
     var selectedItem by mutableStateOf("")
+    private val TAG = "SettingsVM"
 
     fun download(url: String, context: Context) {
         val outputDir = context.filesDir.path
         viewModelScope.launch(Dispatchers.IO) {
-            val response = app.get(url).parsed<PluginResponseRoot>()
-
-            response.plugins.forEach {
-                val uri = it.url
-                val filename = uri.substring(uri.lastIndexOf('/') + 1)
-                val filePath = "$outputDir/$filename"
-                val result = downloadPlugin(uri, filePath)
-                if (result) {
-                    val plugin = getPluginFromManifest(filePath, url, it.version)
-                    plugin?.let { pl ->
-                        pluginDao.insertPlugin(pl)
-                    }
-                }
-            }
-
+            downloadPlugins(url, pluginDao, outputDir)
         }
         Toast.makeText(context, "Plugins Downloaded", Toast.LENGTH_SHORT).show()
     }
@@ -46,6 +32,7 @@ class SettingsVM(private val pluginDao: PluginDao) : ViewModel() {
     fun deletePlugin(plugin: Plugin) {
         viewModelScope.launch(Dispatchers.IO) {
             pluginDao.deletePlugin(plugin.id)
+            deletedPluginDao.insertDeletedPlugin(DeletedPlugin(plugin.id))
             val file = File(plugin.filePath)
             if (file.exists() ) {
                 file.delete()

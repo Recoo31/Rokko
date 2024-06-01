@@ -1,6 +1,7 @@
 package kurd.reco.recoz.view.videoscreen
 
 import android.content.Intent
+import android.graphics.Typeface
 import android.net.Uri
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
@@ -29,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -40,6 +42,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.CaptionStyleCompat
 import androidx.media3.ui.PlayerView
 import kotlinx.coroutines.delay
 import kurd.reco.api.model.PlayDataModel
@@ -102,6 +105,13 @@ fun VideoControlBar(
         }
     }
 
+    var bottomPadding by remember {
+        mutableIntStateOf(180)
+    }
+
+    // TODO: Update subtitle position according to Resize mode
+    // It's like this for now
+
     Box(modifier = Modifier.fillMaxSize()) {
         AndroidView(
             factory = {
@@ -110,10 +120,36 @@ fun VideoControlBar(
                     resizeMode = _resizeMode
                     player = exoPlayer
                     layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+                    subtitleView?.apply {
+                        setPadding(0, 0, 0, bottomPadding)
+                        this.setStyle(
+                            CaptionStyleCompat(
+                                Color.White.toArgb(),
+                                0x000000FF,
+                                0x00000000,
+                                CaptionStyleCompat.EDGE_TYPE_OUTLINE,
+                                Color.Black.toArgb(),
+                                Typeface.DEFAULT,
+                            )
+                        )
+                    }
                 }
             },
             update = {
                 it.resizeMode = _resizeMode
+                it.subtitleView?.apply {
+                    setPadding(0, 0, 0, bottomPadding)
+                    this.setStyle(
+                        CaptionStyleCompat(
+                            Color.White.toArgb(),
+                            0x000000FF,
+                            0x00000000,
+                            CaptionStyleCompat.EDGE_TYPE_OUTLINE,
+                            Color.Black.toArgb(),
+                            Typeface.DEFAULT,
+                        )
+                    )
+                }
             }
         )
 
@@ -177,9 +213,18 @@ fun VideoControlBar(
                             onResizeClick = {
                                 println(_resizeMode)
                                 _resizeMode = when (_resizeMode) {
-                                    AspectRatioFrameLayout.RESIZE_MODE_FIT -> AspectRatioFrameLayout.RESIZE_MODE_FILL
-                                    AspectRatioFrameLayout.RESIZE_MODE_FILL -> AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-                                    AspectRatioFrameLayout.RESIZE_MODE_ZOOM -> AspectRatioFrameLayout.RESIZE_MODE_FIT
+                                    AspectRatioFrameLayout.RESIZE_MODE_FIT -> {
+                                        bottomPadding = 140
+                                        AspectRatioFrameLayout.RESIZE_MODE_FILL
+                                    }
+                                    AspectRatioFrameLayout.RESIZE_MODE_FILL -> {
+                                        bottomPadding = 160
+                                        AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                                    }
+                                    AspectRatioFrameLayout.RESIZE_MODE_ZOOM -> {
+                                        bottomPadding = 50
+                                        AspectRatioFrameLayout.RESIZE_MODE_FIT
+                                    }
                                     else -> AspectRatioFrameLayout.RESIZE_MODE_FILL
                                 }
                             },
