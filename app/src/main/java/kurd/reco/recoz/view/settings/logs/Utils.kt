@@ -1,5 +1,7 @@
 package kurd.reco.recoz.view.settings.logs
 
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,7 +14,7 @@ enum class LogType {
 }
 
 object AppLog {
-    var logs by mutableStateOf<List<LogItem>>(emptyList())
+    var logs by mutableStateOf(emptyList<LogItem>())
 
     fun i(tag: String, message: String) {
         Log.i(tag, message)
@@ -49,4 +51,15 @@ object AppLog {
     }
 }
 
+fun shareLogs(context: Context) {
+    val logMessages = AppLog.logs.joinToString(separator = "\n") { log ->
+        "[${log.type}] ${log.message}"
+    }
 
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, logMessages)
+    }
+    val shareIntent = Intent.createChooser(intent, null)
+    context.startActivity(shareIntent)
+}

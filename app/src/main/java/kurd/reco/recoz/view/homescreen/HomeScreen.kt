@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bumptech.glide.request.RequestOptions
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.DetailScreenRootDestination
@@ -160,7 +161,8 @@ fun MovieItem(item: HomeItemModel, onItemClick: () -> Unit) {
             },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Fit
-            )
+            ),
+            requestOptions = { RequestOptions().timeout(5000) }
         )
     }
 }

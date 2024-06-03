@@ -5,6 +5,7 @@ import android.content.Context
 import android.media.AudioManager
 import android.net.Uri
 import android.view.Window
+import android.view.WindowManager
 import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
 import androidx.core.view.WindowInsetsCompat
@@ -102,6 +103,7 @@ fun hideSystemBars(window: Window) {
         it.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         it.hide(WindowInsetsCompat.Type.systemBars())
     }
+    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 }
 
 @OptIn(UnstableApi::class)

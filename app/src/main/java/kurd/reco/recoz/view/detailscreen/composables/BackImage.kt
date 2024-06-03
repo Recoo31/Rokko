@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import com.bumptech.glide.request.RequestOptions
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -30,7 +31,8 @@ fun BackImage(item: String, modifier: Modifier = Modifier) {
                             .align(Alignment.Center)
                     )
                 }
-            }
+            },
+            requestOptions = { RequestOptions().timeout(5000) }
         )
         Box(
             modifier = Modifier

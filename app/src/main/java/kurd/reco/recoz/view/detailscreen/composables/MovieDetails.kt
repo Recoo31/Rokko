@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.bumptech.glide.request.RequestOptions
 import com.skydoves.landscapist.glide.GlideImage
 import kurd.reco.api.model.DetailScreenModel
 
@@ -38,7 +39,8 @@ fun MovieDetails(item: DetailScreenModel, modifier: Modifier = Modifier) {
         ) {
             GlideImage(
                 imageModel = { item.image },
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                requestOptions = { RequestOptions().timeout(5000) }
             )
         }
 

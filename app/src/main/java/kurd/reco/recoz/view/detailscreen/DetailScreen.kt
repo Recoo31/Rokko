@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -37,6 +38,7 @@ import kurd.reco.recoz.PlayerActivity
 import kurd.reco.recoz.view.detailscreen.composables.BackImage
 import kurd.reco.recoz.view.detailscreen.composables.DescriptionSection
 import kurd.reco.recoz.view.detailscreen.composables.MovieDetails
+import kurd.reco.recoz.view.detailscreen.composables.MultiSourceDialog
 import kurd.reco.recoz.view.detailscreen.composables.SeasonItem
 import kurd.reco.recoz.view.detailscreen.composables.SeasonsSelector
 import kurd.reco.recoz.view.homescreen.LoadingBar
@@ -97,6 +99,7 @@ fun DetailScreen(
     var selectedSeason by rememberSaveable { mutableIntStateOf(0) }
     val clickedItem by viewModel.clickedItem.collectAsState()
     var isError by remember { mutableStateOf(false) }
+    var showMultiSelect by remember { mutableStateOf(false) }
     var errorText by remember { mutableStateOf("") }
     val context = LocalContext.current
     val mainVM: MainVM = koinInject()
@@ -111,12 +114,24 @@ fun DetailScreen(
         )
     }
 
+    if (showMultiSelect) {
+        Dialog(onDismissRequest = { showMultiSelect = false }) {
+            MultiSourceDialog(mainVM.playDataModel, context) { mainVM.playDataModel = it }
+        }
+    }
+
     when (val resource = clickedItem) {
         is Resource.Success -> {
             val playData = resource.value
             mainVM.playDataModel = playData
-            val intent = Intent(context, PlayerActivity::class.java)
-            context.startActivity(intent)
+            LaunchedEffect(resource) {
+                if (playData.urls.size > 1) {
+                    showMultiSelect = true
+                } else {
+                    val intent = Intent(context, PlayerActivity::class.java)
+                    context.startActivity(intent)
+                }
+            }
         }
         is Resource.Failure -> {
             LaunchedEffect(resource) {

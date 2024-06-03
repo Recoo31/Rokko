@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.bumptech.glide.request.RequestOptions
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 import kurd.reco.api.model.SeriesItem
@@ -64,7 +65,8 @@ fun SeasonItem(item: SeriesItem, onClick: (Any) -> Unit) {
                             )
                         }
                     },
-                    imageOptions = ImageOptions(contentScale = ContentScale.FillWidth)
+                    imageOptions = ImageOptions(contentScale = ContentScale.FillWidth),
+                    requestOptions = { RequestOptions().timeout(5000) }
                 )
             }
             Text(

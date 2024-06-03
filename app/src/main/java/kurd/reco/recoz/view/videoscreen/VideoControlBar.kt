@@ -46,6 +46,7 @@ import androidx.media3.ui.CaptionStyleCompat
 import androidx.media3.ui.PlayerView
 import kotlinx.coroutines.delay
 import kurd.reco.api.model.PlayDataModel
+import kurd.reco.recoz.view.settings.logs.AppLog
 import kurd.reco.recoz.view.videoscreen.composables.GestureAdjuster
 import kurd.reco.recoz.view.videoscreen.composables.SettingsDialog
 import kurd.reco.recoz.view.videoscreen.composables.VideoPlayerBottom
@@ -65,6 +66,7 @@ fun VideoControlBar(
     var videoSize by remember { mutableStateOf(exoPlayer.videoSize) }
     var showSettingsDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val TAG = "VideoControlBar"
 
     var _resizeMode by remember { mutableIntStateOf(AspectRatioFrameLayout.RESIZE_MODE_ZOOM) }
 
@@ -87,6 +89,7 @@ fun VideoControlBar(
 
             override fun onPlayerError(error: PlaybackException) {
                 error.printStackTrace()
+                AppLog.e(TAG, error.stackTraceToString())
                 exoPlayer.release()
 
                 val intent = Intent(Intent.ACTION_VIEW).apply {
@@ -196,10 +199,6 @@ fun VideoControlBar(
                             )
                         }
                     }
-
-
-
-//                    VideoSeekControls(exoPlayer)
 
                     Box(
                         modifier = Modifier.fillMaxSize(),

@@ -19,20 +19,43 @@ private const val TAG = "PluginDownloader"
 fun extractDexFileFromZip(context: Context, plugin: Plugin): File? {
     val pluginFile = File(plugin.filePath)
     if (!pluginFile.exists()) {
+        println("Plugin file does not exist: ${plugin.filePath}")
         return null
     }
 
     val outputDir = context.getDir("dex", Context.MODE_PRIVATE)
     val outputFile = File(outputDir, "classes.dex")
 
+    // Check if the file already exists and is read-only, then make it writable and delete it
+    if (outputFile.exists()) {
+        if (!outputFile.setWritable(true)) {
+            AppLog.d(TAG,"Failed to make file writable: ${outputFile.absolutePath}")
+            return null
+        }
+        if (!outputFile.delete()) {
+            AppLog.d(TAG, "Failed to delete existing file: ${outputFile.absolutePath}")
+            return null
+        }
+    }
+
     ZipInputStream(FileInputStream(pluginFile)).use { zipInputStream ->
         var entry: ZipEntry? = zipInputStream.nextEntry
         while (entry != null) {
             if (entry.name == "classes.dex") {
                 FileOutputStream(outputFile).use { outputStream ->
-                    zipInputStream.copyTo(outputStream)
+                    try {
+                        zipInputStream.copyTo(outputStream)
+                        // Only set the file to read-only after successful write
+                        if (outputFile.setReadOnly()) {
+                            AppLog.d(TAG,"File successfully set to read-only: ${outputFile.absolutePath}")
+                        } else {
+                            AppLog.d(TAG,"Failed to set file to read-only: ${outputFile.absolutePath}")
+                        }
+                        return outputFile
+                    } catch (t: Throwable) {
+                        println("Error writing to file: ${t.message}")
+                    }
                 }
-                return outputFile
             }
             entry = zipInputStream.nextEntry
         }

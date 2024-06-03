@@ -1,9 +1,10 @@
 {
-  "version": 1.1,
-  "downloadUrl": "https://github.com/Recoo31/Rokko/releases/download/1.1/app-release.apk",
+  "version": 1.2,
+  "downloadUrl": "https://github.com/Recoo31/Rokko/releases/download/1.2/app-release.apk",
   "changeLog": [
-    "Added app update system",
-    "Added plugin update system",
-    "Fixed subtitle position"
+    "Added logs share feature",
+    "Added source selector",
+    "Android 14 support",
+    "Fixed wake-lock"
   ]
 }
