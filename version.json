@@ -1,10 +1,10 @@
 {
-  "version": 1.2,
-  "downloadUrl": "https://github.com/Recoo31/Rokko/releases/download/1.2/app-release.apk",
+  "version": 1.3,
+  "downloadUrl": "https://github.com/Recoo31/Rokko/releases/download/1.3/app-release.apk",
   "changeLog": [
     "Added logs share feature",
     "Added source selector",
     "Android 14 support",
-    "Fixed wake-lock"
+    "Fixed wake-lock, player"
   ]
 }

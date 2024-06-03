@@ -24,7 +24,6 @@ import kurd.reco.recoz.view.settings.logs.AppLog
 @Composable
 fun VideoPlayerCompose(item: PlayDataModel) {
     val context = LocalContext.current
-    val TAG = "VideoPlayerCompose"
     val windows = (context as Activity).window
 
     val trackSelector = DefaultTrackSelector(context).apply {
@@ -58,7 +57,6 @@ fun VideoPlayerCompose(item: PlayDataModel) {
                 setMediaItem(mediaItem)
                 prepare()
                 playWhenReady = true
-                AppLog.i(TAG, "ExoPlayer created")
             }
     }
 

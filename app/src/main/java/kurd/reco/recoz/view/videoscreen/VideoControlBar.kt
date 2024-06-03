@@ -1,10 +1,12 @@
 package kurd.reco.recoz.view.videoscreen
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
+import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -17,6 +19,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -59,7 +65,6 @@ fun VideoControlBar(
     item: PlayDataModel,
     trackSelector: DefaultTrackSelector
 ) {
-    var isPlaying by remember { mutableStateOf(exoPlayer.isPlaying) }
     var currentTime by remember { mutableLongStateOf(0L) }
     var duration by remember { mutableLongStateOf(exoPlayer.duration) }
     var showControls by remember { mutableStateOf(false) }
@@ -67,16 +72,10 @@ fun VideoControlBar(
     var showSettingsDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val TAG = "VideoControlBar"
-
     var _resizeMode by remember { mutableIntStateOf(AspectRatioFrameLayout.RESIZE_MODE_ZOOM) }
-
 
     LaunchedEffect(exoPlayer) {
         val listener = object : Player.Listener {
-            override fun onIsPlayingChanged(_isPlaying: Boolean) {
-                isPlaying = _isPlaying
-            }
-
             override fun onPlaybackStateChanged(playbackState: Int) {
                 if (playbackState == Player.STATE_READY) {
                     duration = exoPlayer.duration
@@ -183,6 +182,14 @@ fun VideoControlBar(
                             .padding(16.dp),
                         contentAlignment = Alignment.TopCenter
                     ) {
+                        IconButton(onClick = {
+                            exoPlayer.release()
+                            (context as? Activity)?.finish() },
+                            modifier = Modifier.align(Alignment.TopStart)
+                        ) {
+                            Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Back")
+                        }
+
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
@@ -208,7 +215,6 @@ fun VideoControlBar(
                             exoPlayer,
                             currentTime,
                             duration,
-                            isPlaying,
                             onResizeClick = {
                                 println(_resizeMode)
                                 _resizeMode = when (_resizeMode) {

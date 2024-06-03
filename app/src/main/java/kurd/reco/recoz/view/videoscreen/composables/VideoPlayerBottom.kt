@@ -27,7 +27,6 @@ fun VideoPlayerBottom(
     exoPlayer: ExoPlayer,
     currentTime: Long,
     duration: Long,
-    isPlaying: Boolean,
     onResizeClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
@@ -39,7 +38,7 @@ fun VideoPlayerBottom(
     ) {
         IconButton(onClick = { if (exoPlayer.isPlaying) exoPlayer.pause() else exoPlayer.play() }) {
             Icon(
-                painter = painterResource(id = if (isPlaying) R.drawable.round_pause_24 else R.drawable.round_play_arrow_24),
+                painter = painterResource(id = if (exoPlayer.isPlaying) R.drawable.round_pause_24 else R.drawable.round_play_arrow_24),
                 contentDescription = null,
                 tint = Color.White
             )

@@ -49,7 +49,7 @@ class MainActivity : ComponentActivity() {
 //                    )
 //                    val intent = Intent(context, PlayerActivity::class.java)
 //
-//                    viewModel.playDataModel = PlayDataModel(urls, null, null, null)
+//                    viewModel.playDataModel = PlayDataModel(urls, null, null, null, null)
 //
 //                    context.startActivity(intent)
 
