@@ -33,17 +33,22 @@ fun createHttpDataSourceFactory(headers: Map<String, String>): HttpDataSource.Fa
 }
 
 fun createMediaItem(item: PlayDataModel, url: String): MediaItem {
-    return MediaItem.fromUri(url).buildUpon().apply {
+    val mediaItemBuilder = MediaItem.Builder().apply {
+        setUri(Uri.parse(url))
+        when {
+            url.contains(".mpd", true) -> setMimeType(MimeTypes.APPLICATION_MPD)
+            url.contains(".m3u8", true) -> setMimeType(MimeTypes.APPLICATION_M3U8)
+        }
+
         if (item.drm != null) {
-            setDrmConfiguration(
-                createDrmConfiguration(item.drm!!)
-            )
+            setDrmConfiguration(createDrmConfiguration(item.drm!!))
         }
         if (item.subtitles != null) {
             val subtitleConfigurations = item.subtitles!!.map { setSubtitle(it) }
             setSubtitleConfigurations(subtitleConfigurations)
         }
-    }.build()
+    }
+    return mediaItemBuilder.build()
 }
 
 fun createDrmConfiguration(drm: DrmDataModel): MediaItem.DrmConfiguration {
