@@ -1,6 +1,7 @@
 package kurd.reco.api
 
 import kurd.reco.api.model.DetailScreenModel
+import kurd.reco.api.model.HomeItemModel
 import kurd.reco.api.model.HomeScreenModel
 import kurd.reco.api.model.PlayDataModel
 import kurd.reco.api.model.SearchModel
@@ -12,4 +13,5 @@ interface RemoteRepo {
     suspend fun getUrl(id: Any): Resource<PlayDataModel>
     suspend fun search(query: String): List<SearchModel>
     var seriesList: List<SeriesDataModel>?
+    var pagerList: List<HomeItemModel>?
 }
