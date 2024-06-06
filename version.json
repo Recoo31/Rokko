@@ -1,11 +1,8 @@
 {
-  "version": 1.4,
-  "downloadUrl": "https://github.com/Recoo31/Rokko/releases/download/1.4/app-release.apk",
+  "version": 1.5,
+  "downloadUrl": "https://github.com/Recoo31/Rokko/releases/download/1.5/app-release.apk",
   "changeLog": [
     "Added Mpd-M3u8 Support",
-    "Added logs share feature",
-    "Added source selector",
-    "Android 14 support",
-    "Fixed wake-lock, player"
+    "Fixed UI"
   ]
 }

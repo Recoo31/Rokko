@@ -18,7 +18,6 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import kurd.reco.api.model.PlayDataModel
-import kurd.reco.recoz.view.settings.logs.AppLog
 
 @OptIn(UnstableApi::class)
 @Composable

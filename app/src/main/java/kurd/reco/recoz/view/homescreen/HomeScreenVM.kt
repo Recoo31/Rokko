@@ -15,10 +15,14 @@ class HomeScreenVM(private val pluginManager: PluginManager): ViewModel() {
     var moviesList: MutableStateFlow<Resource<List<HomeScreenModel>>> = MutableStateFlow(Resource.Loading)
         private set
 
-    private val _clickedItem: MutableStateFlow<Resource<PlayDataModel>> = MutableStateFlow(Resource.Loading)
-    val clickedItem get() = _clickedItem
+    var clickedItem: MutableStateFlow<Resource<PlayDataModel>> = MutableStateFlow(Resource.Loading)
+        private set
 
     private val TAG = "HomeScreenVM"
+
+    val pagerList by lazy {
+        pluginManager.getSelectedPlugin().pagerList
+    }
 
     init {
         getMovies()
@@ -40,11 +44,11 @@ class HomeScreenVM(private val pluginManager: PluginManager): ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = pluginManager.getSelectedPlugin().getUrl(id)
-                _clickedItem.value = response
+                clickedItem.value = response
                 AppLog.i(TAG, "getUrl: $response")
             } catch (e: Throwable) {
                 e.printStackTrace()
-                _clickedItem.value = Resource.Failure(e.localizedMessage ?: e.message ?: "Unknown Error")
+                clickedItem.value = Resource.Failure(e.localizedMessage ?: e.message ?: "Unknown Error")
             }
         }
     }

@@ -28,13 +28,13 @@ class PluginManager(private val pluginDao: PluginDao, private val deletedPlugin:
             AppLog.e("PluginManager", "Error loading plugins: ${t.localizedMessage ?: "Unknown error"}")
         }
 //        val plugin = Plugin(
-//            id = "disney",
-//            name = "Disney",
-//            classPath = "kurd.reco.disney",
-//            className = "Disney",
+//            id = "tvplus",
+//            name = "TvPlus",
+//            classPath = "kurd.reco.tvplus",
+//            className = "TvPlus",
 //            version = "1.0",
 //            downloadUrl = "https://raw.githubusercontent.com/Recoo31/RoxioPlugins/main/version.json",
-//            filePath = "/data/user/0/kurd.reco.recoz/files/Disney.krd"
+//            filePath = "/data/user/0/kurd.reco.recoz/files/TvPlus.krd"
 //        )
 //        pluginDao.insertPlugin(plugin)
     }

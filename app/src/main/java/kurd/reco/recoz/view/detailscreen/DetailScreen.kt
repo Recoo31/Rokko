@@ -24,9 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -41,6 +39,7 @@ import kurd.reco.recoz.view.detailscreen.composables.MovieDetails
 import kurd.reco.recoz.view.detailscreen.composables.MultiSourceDialog
 import kurd.reco.recoz.view.detailscreen.composables.SeasonItem
 import kurd.reco.recoz.view.detailscreen.composables.SeasonsSelector
+import kurd.reco.recoz.view.homescreen.ErrorMessage
 import kurd.reco.recoz.view.homescreen.LoadingBar
 import kurd.reco.recoz.view.settings.logs.AppLog
 import org.koin.androidx.compose.koinViewModel
@@ -73,19 +72,17 @@ fun DetailScreenRoot(
             is Resource.Loading -> LoadingBar()
             is Resource.Success -> DetailScreen(resource.value, viewModel)
             is Resource.Failure -> {
-                isError = true
-                errorText = resource.error
+                LaunchedEffect(resource) {
+                    isError = true
+                    errorText = resource.error
+                }
             }
         }
 
         if (isError) {
-            println("Error: $errorText")
-            Text(
-                text = errorText,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 16.sp,
-                textAlign = TextAlign.Center
-            )
+            ErrorMessage(errorText) {
+                isError = false
+            }
         }
     }
 }
@@ -105,13 +102,9 @@ fun DetailScreen(
     val mainVM: MainVM = koinInject()
 
     if (isError) {
-        println("Error: $errorText")
-        Text(
-            text = errorText,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 16.sp,
-            textAlign = TextAlign.Center
-        )
+        ErrorMessage(errorText) {
+            isError = false
+        }
     }
 
     if (showMultiSelect) {
