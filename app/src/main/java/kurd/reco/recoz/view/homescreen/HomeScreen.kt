@@ -135,7 +135,8 @@ fun HomeScreen(movieList: List<HomeScreenModel>, viewModel: HomeScreenVM, naviga
             Text(
                 text = movie.title,
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.54f)
             )
 
             LazyRow {
