@@ -21,7 +21,7 @@ import androidx.navigation.NavController
 import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.HomeScreenRootDestination
 import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.SettingScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.SettingsScreenDestination
 import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
 import com.ramcosta.composedestinations.utils.currentDestinationAsState
 import com.ramcosta.composedestinations.utils.startDestination
@@ -43,7 +43,7 @@ enum class NavigationBarDestination(
         label = "Search"
     ),
     Settings(
-        direction = SettingScreenDestination,
+        direction = SettingsScreenDestination,
         icon = Icons.Default.Settings,
         label = "Settings"
     )
@@ -59,7 +59,7 @@ fun BottomBar(
     NavigationBar(
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp)),
-        tonalElevation = 15.dp,
+        tonalElevation = 10.dp,
         windowInsets = WindowInsets.navigationBars
     ) {
         NavigationBarDestination.entries.forEach { destination ->

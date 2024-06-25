@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kurd.reco.recoz.focusScale
 
 @Composable
 fun DescriptionSection(
@@ -26,6 +27,7 @@ fun DescriptionSection(
             text = item,
             modifier = Modifier
                 .padding(8.dp)
+                .focusScale()
                 .animateContentSize(animationSpec = tween(200)),
             color = MaterialTheme.colorScheme.primary,
             fontSize = 15.sp,

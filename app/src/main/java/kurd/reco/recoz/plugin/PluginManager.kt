@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import dalvik.system.PathClassLoader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kurd.reco.api.RemoteRepo
@@ -12,10 +14,10 @@ import kurd.reco.api.app
 import kurd.reco.recoz.view.settings.logs.AppLog
 import kurd.reco.recoz.view.settings.plugin.extractDexFileFromZip
 
-class PluginManager(private val pluginDao: PluginDao, private val deletedPlugin: DeletedPluginDao,appContext: Context) : ViewModel() {
-    private val context = appContext.applicationContext
+class PluginManager(private val pluginDao: PluginDao, private val deletedPlugin: DeletedPluginDao, private val context: Context) : ViewModel() {
     private var pluginInstance: RemoteRepo? = null
     private val outputDir = context.filesDir.path
+    private val selectedPluginId = MutableStateFlow<Plugin?>(null)
 
     init {
         try {
@@ -23,6 +25,7 @@ class PluginManager(private val pluginDao: PluginDao, private val deletedPlugin:
                 checkPluginUpdate()
             }
             loadLastSelectedPlugin()
+            selectedPluginId.value = getLastSelectedPlugin()
         } catch (t: Throwable) {
             t.printStackTrace()
             AppLog.e("PluginManager", "Error loading plugins: ${t.localizedMessage ?: "Unknown error"}")
@@ -63,11 +66,14 @@ class PluginManager(private val pluginDao: PluginDao, private val deletedPlugin:
         AppLog.d("PluginManager", "selectPlugin: ${plugin.id}")
         pluginDao.selectPlugin(plugin.id)
         pluginInstance = loadPlugin(plugin)
+        selectedPluginId.value = plugin
     }
 
-    fun getLastSelectedPluginId(): String? {
-        return pluginDao.getSelectedPlugin()?.id
+    fun getLastSelectedPlugin(): Plugin? {
+        return pluginDao.getSelectedPlugin()
     }
+
+    fun getSelectedPluginFlow(): StateFlow<Plugin?> = selectedPluginId
 
     fun getAllPlugins(): List<Plugin> = pluginDao.getAllPlugins()
 

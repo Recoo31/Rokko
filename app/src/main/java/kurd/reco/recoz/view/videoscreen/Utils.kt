@@ -2,10 +2,12 @@ package kurd.reco.recoz.view.videoscreen
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.media.AudioManager
 import android.net.Uri
 import android.view.Window
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
 import androidx.core.view.WindowInsetsCompat
@@ -134,4 +136,16 @@ fun adjustVolume(context: Context, change: Float) {
     val currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
     val newVolume = (currentVolume + change * maxVolume).toInt().coerceIn(0, maxVolume)
     audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newVolume, 0)
+}
+
+fun openVideoWithSelectedPlayer(context: Context, videoUri: String, playerPackageName: String) {
+    val intent = Intent(Intent.ACTION_VIEW).apply {
+        setDataAndType(Uri.parse(videoUri), "video/*")
+        setPackage(playerPackageName)
+    }
+    if (intent.resolveActivity(context.packageManager) != null) {
+        context.startActivity(intent)
+    } else {
+        Toast.makeText(context, "Selected player is not installed", Toast.LENGTH_SHORT).show()
+    }
 }

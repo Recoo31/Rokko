@@ -12,10 +12,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import kurd.reco.recoz.view.settings.SettingsVM
+import kurd.reco.recoz.MainVM
 
 @Composable
-fun DownloadDialog(viewModel: SettingsVM, onDismiss: () -> Unit) {
+fun DownloadDialog(viewModel: MainVM, onDismiss: () -> Unit) {
     var pluginUrl by remember { mutableStateOf("") }
     val context = LocalContext.current
 

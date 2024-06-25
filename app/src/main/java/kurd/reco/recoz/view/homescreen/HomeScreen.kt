@@ -43,20 +43,30 @@ import kurd.reco.api.model.HomeItemModel
 import kurd.reco.api.model.HomeScreenModel
 import kurd.reco.recoz.MainVM
 import kurd.reco.recoz.PlayerActivity
+import kurd.reco.recoz.focusScale
+import kurd.reco.recoz.plugin.PluginManager
 import kurd.reco.recoz.view.settings.logs.AppLog
-import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 
 @Destination<RootGraph>(start = true)
 @Composable
 fun HomeScreenRoot(navigator: DestinationsNavigator) {
-    val viewModel: HomeScreenVM = koinViewModel()
-    val mainVM: MainVM = koinInject()
-    val context = LocalContext.current
+    val viewModel: HomeScreenVM = koinInject()
     val movieList by viewModel.moviesList.collectAsState()
     var isError by remember { mutableStateOf(false) }
     var errorText by remember { mutableStateOf("") }
+    val pluginManager: PluginManager = koinInject()
+    val lastPlugin by pluginManager.getSelectedPluginFlow().collectAsState()
+    var plugin by remember { mutableStateOf(lastPlugin) }
+
+    LaunchedEffect(lastPlugin) {
+        if (plugin?.id != lastPlugin?.id) {
+            viewModel.getMovies()
+            plugin = lastPlugin
+        }
+    }
+
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         when (val resource = movieList) {
@@ -113,8 +123,7 @@ fun HomeScreen(movieList: List<HomeScreenModel>, viewModel: HomeScreenVM, naviga
     }
 
     LazyColumn {
-
-        viewModel.pagerList?.let {
+        viewModel.getPagerList()?.let {
             item {
                 ViewPager(it, onItemClicked = {
                     if (it.isLiveTv) {
@@ -176,6 +185,7 @@ fun MovieItem(item: HomeItemModel, onItemClick: () -> Unit) {
         modifier = Modifier
             .heightIn(180.dp, 215.dp)
             .widthIn(130.dp, 165.dp)
+            .focusScale()
             .padding(horizontal = 10.dp)
             .clip(
                 RoundedCornerShape(18.dp)

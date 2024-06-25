@@ -3,6 +3,7 @@ package kurd.reco.recoz
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -14,6 +15,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kurd.reco.api.app
 import kurd.reco.api.model.PlayDataModel
+import kurd.reco.recoz.plugin.DeletedPlugin
+import kurd.reco.recoz.plugin.DeletedPluginDao
+import kurd.reco.recoz.plugin.Plugin
+import kurd.reco.recoz.plugin.PluginDao
+import kurd.reco.recoz.view.settings.plugin.downloadPlugins
 import java.io.File
 import java.io.FileOutputStream
 
@@ -24,7 +30,7 @@ data class VersionData(
 )
 
 
-class MainVM: ViewModel() {
+class MainVM(private val pluginDao: PluginDao, private val deletedPluginDao: DeletedPluginDao): ViewModel() {
     var playDataModel: PlayDataModel? = null
     var showUpdateDialog by mutableStateOf(false)
     var downloadProgress by mutableFloatStateOf(0f)
@@ -86,5 +92,24 @@ class MainVM: ViewModel() {
         installIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         installIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(installIntent)
+    }
+
+    fun download(url: String, context: Context) {
+        val outputDir = context.filesDir.path
+        viewModelScope.launch(Dispatchers.IO) {
+            downloadPlugins(url, pluginDao, outputDir)
+        }
+        Toast.makeText(context, "Plugins Downloading...", Toast.LENGTH_SHORT).show()
+    }
+
+    fun deletePlugin(plugin: Plugin) {
+        viewModelScope.launch(Dispatchers.IO) {
+            pluginDao.deletePlugin(plugin.id)
+            deletedPluginDao.insertDeletedPlugin(DeletedPlugin(plugin.id))
+            val file = File(plugin.filePath)
+            if (file.exists() ) {
+                file.delete()
+            }
+        }
     }
 }

@@ -1,6 +1,5 @@
 package kurd.reco.recoz.view.detailscreen.composables
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,33 +15,49 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kurd.reco.api.model.SeriesDataModel
+import kurd.reco.recoz.focusScale
 
 @Composable
-fun SeasonsSelector(season: List<SeriesDataModel>, selectedSeason: Int, onSeasonSelected: (Int) -> Unit) {
+fun SeasonsSelector(
+    season: List<SeriesDataModel>,
+    selectedSeason: Int,
+    onSeasonSelected: (Int) -> Unit
+) {
     LazyRow {
         items(season.size) { item ->
             val selected = item == selectedSeason
-            Box(
-                modifier = Modifier
-                    .padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
-                    .size(50.dp)
-                    .clip(CircleShape)
-                    .background(if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background)
-                    .clickable { onSeasonSelected(item) }
-                    .border(
-                        BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
-                        CircleShape
-                    )
-                    .animateContentSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "${item + 1}",
-                    color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onBackground
-                )
-            }
+            SeasonSelectorItem(item, selected, onSeasonSelected)
         }
+    }
+}
+
+@Composable
+fun SeasonSelectorItem(item: Int, selected: Boolean, onSeasonSelected: (Int) -> Unit) {
+    Box(
+        modifier = Modifier
+            .padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
+            .size(width = 100.dp, height = 50.dp)
+            .focusScale()
+            .clip(CircleShape)
+            .background(
+                color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background
+            )
+            .border(
+                BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                CircleShape
+            )
+            .clickable { onSeasonSelected(item) },
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "Season ${item + 1}",
+            color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold)
+        )
     }
 }

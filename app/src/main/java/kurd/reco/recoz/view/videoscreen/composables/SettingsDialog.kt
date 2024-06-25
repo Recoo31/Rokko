@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -54,7 +55,8 @@ fun SettingsDialog(
             modifier = modifier
                 .fillMaxWidth(0.5f)
                 .padding(16.dp)
-                .clickable(false) {} // Prevent click-through
+                .clickable(false) {},
+            colors = CardDefaults.outlinedCardColors().copy(containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.8f))
         ) {
             Column {
                 Row(

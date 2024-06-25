@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -29,14 +30,16 @@ import com.bumptech.glide.request.RequestOptions
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 import kurd.reco.api.model.SeriesItem
+import kurd.reco.recoz.focusScale
 
 @Composable
 fun SeasonItem(item: SeriesItem, onClick: (Any) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     ElevatedCard(
         modifier = Modifier
-            .padding(8.dp)
             .fillMaxWidth()
+            .padding(8.dp)
+            .focusScale()
     ) {
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
             Text(
@@ -65,6 +68,7 @@ fun SeasonItem(item: SeriesItem, onClick: (Any) -> Unit) {
                             )
                         }
                     },
+                    modifier = Modifier.heightIn(max = 350.dp),
                     imageOptions = ImageOptions(contentScale = ContentScale.FillWidth),
                     requestOptions = { RequestOptions().timeout(5000) }
                 )

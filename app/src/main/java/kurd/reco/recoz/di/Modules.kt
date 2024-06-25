@@ -11,7 +11,8 @@ import kurd.reco.recoz.plugin.PluginManager
 import kurd.reco.recoz.view.detailscreen.DetailScreenVM
 import kurd.reco.recoz.view.homescreen.HomeScreenVM
 import kurd.reco.recoz.view.searchscreen.SearchScreenVM
-import kurd.reco.recoz.view.settings.SettingsVM
+import kurd.reco.recoz.view.settings.SettingsDataStore
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -30,13 +31,14 @@ val dataBaseModule = module {
     single { provideDataBase(get()) }
     single { providePluginDao(get()) }
     single { provideDeletedPluginDao(get()) }
+
+    single { SettingsDataStore(androidContext()) }
 }
 
 val viewModelModule = module {
     single { PluginManager(get(), get(), get()) }
-    single { MainVM() }
-    viewModel { HomeScreenVM(get()) }
+    single { MainVM(get(), get()) }
+    single { HomeScreenVM(get()) }
     viewModel { DetailScreenVM(get()) }
-    viewModel { SearchScreenVM(get()) }
-    viewModel { SettingsVM(get(), get()) }
+    single { SearchScreenVM(get()) }
 }

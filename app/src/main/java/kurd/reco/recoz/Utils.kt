@@ -40,7 +40,7 @@ fun Modifier.isFocused(
 
 @Composable
 fun Modifier.focusScale(
-    scale: Float = 1.1F,
+    scale: Float = 1.08F,
     hoverable: Boolean = true,
     focusable: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }

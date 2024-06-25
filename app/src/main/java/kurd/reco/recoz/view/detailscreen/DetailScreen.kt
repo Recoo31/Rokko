@@ -8,7 +8,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,7 +36,9 @@ import kurd.reco.api.Resource
 import kurd.reco.api.model.DetailScreenModel
 import kurd.reco.recoz.MainVM
 import kurd.reco.recoz.PlayerActivity
+import kurd.reco.recoz.focusScale
 import kurd.reco.recoz.view.detailscreen.composables.BackImage
+import kurd.reco.recoz.view.detailscreen.composables.CustomIconButton
 import kurd.reco.recoz.view.detailscreen.composables.DescriptionSection
 import kurd.reco.recoz.view.detailscreen.composables.MovieDetails
 import kurd.reco.recoz.view.detailscreen.composables.MultiSourceDialog
@@ -70,7 +75,7 @@ fun DetailScreenRoot(
     ) {
         when (val resource = item) {
             is Resource.Loading -> LoadingBar()
-            is Resource.Success -> DetailScreen(resource.value, viewModel)
+            is Resource.Success -> DetailScreen(resource.value, viewModel, navigator)
             is Resource.Failure -> {
                 LaunchedEffect(resource) {
                     isError = true
@@ -90,7 +95,8 @@ fun DetailScreenRoot(
 @Composable
 fun DetailScreen(
     item: DetailScreenModel,
-    viewModel: DetailScreenVM
+    viewModel: DetailScreenVM,
+    navigator: DestinationsNavigator
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedSeason by rememberSaveable { mutableIntStateOf(0) }
@@ -135,58 +141,72 @@ fun DetailScreen(
         is Resource.Loading -> Unit
     }
 
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
 
-        item.backImage?.let {
-            item {
-                BackImage(it)
-            }
-        }
-
-        item {
-            MovieDetails(item)
-        }
-
-        item.description?.let {
-            item {
-                DescriptionSection(
-                    item = it,
-                    expanded = expanded,
-                    onExpandClick = { expanded = !expanded }
-                )
-            }
-        }
-
-        if (item.isSeries) {
-            viewModel.seriesList?.let { season ->
+            item.backImage?.let {
                 item {
-                    SeasonsSelector(season, selectedSeason) {
-                        selectedSeason = it
-                    }
-                }
-
-                items(season[selectedSeason].episodes) { episode ->
-                    SeasonItem(item = episode) {
-                        Toast.makeText(context, "Loading Video...", Toast.LENGTH_SHORT).show()
-                        viewModel.getUrl(it)
-                    }
+                    BackImage(it)
                 }
             }
-        } else {
+
             item {
-                Button(
-                    onClick = { viewModel.getUrl(item.id) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                ) {
-                    Text(
-                        text = "Play",
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.SemiBold
+                MovieDetails(item)
+            }
+
+            item.description?.let {
+                item {
+                    DescriptionSection(
+                        item = it,
+                        expanded = expanded,
+                        onExpandClick = { expanded = !expanded }
                     )
                 }
             }
+
+            if (item.isSeries) {
+                viewModel.seriesList?.let { season ->
+                    item {
+                        SeasonsSelector(season, selectedSeason) {
+                            selectedSeason = it
+                        }
+                    }
+
+                    items(season[selectedSeason].episodes) { episode ->
+                        SeasonItem(item = episode) {
+                            Toast.makeText(context, "Loading Video...", Toast.LENGTH_SHORT).show()
+                            viewModel.getUrl(it)
+                        }
+                    }
+                }
+            } else {
+                item {
+                    Button(
+                        onClick = { viewModel.getUrl(item.id) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    ) {
+                        Text(
+                            text = "Play",
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.focusScale()
+                        )
+                    }
+                }
+            }
         }
+        CustomIconButton(
+            icon = {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                    contentDescription = "Back"
+                )
+            },
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(8.dp)
+        ) { navigator.navigateUp() }
     }
 }

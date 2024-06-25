@@ -82,7 +82,7 @@ fun SearchScreen(navigator: DestinationsNavigator) {
                 },
                 onValueChange = {
                     query = it
-                    if (query.length > 3) {
+                    if (query.length >= 3) {
                         AppLog.i(TAG, "Query: $query")
                         viewModel.searchList = emptyList()
                         viewModel.search(query)
