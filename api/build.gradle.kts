@@ -47,6 +47,9 @@ dependencies {
 
     // For Http Request
     implementation(libs.jackson.module.kotlin)
+
+    // For ProviderTest
+    implementation(libs.jackson.annotations)
 }
 
 publishing {

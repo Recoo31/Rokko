@@ -3,6 +3,7 @@ agp = "8.5.0-alpha05"
 colorpickerCompose = "1.0.9"
 datastorePreferences = "1.1.1"
 destinationsCore = "2.1.0-beta03"
+jacksonAnnotations = "2.17.1"
 kotlin = "2.0.0"
 jacksonModuleKotlin = "2.17.1"
 landscapistGlide = "2.3.4"
@@ -28,6 +29,7 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 colorpicker-compose = { module = "com.github.skydoves:colorpicker-compose", version.ref = "colorpickerCompose" }
 destinations-core = { module = "io.github.raamcosta.compose-destinations:core", version.ref = "destinationsCore" }
+jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jacksonAnnotations" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
