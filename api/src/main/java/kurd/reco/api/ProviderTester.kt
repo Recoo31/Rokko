@@ -43,6 +43,10 @@ class ProviderTester(private val provider: RemoteRepo) {
             response.value.forEach { homeScreenModel ->
                 log("Home Screen: ${homeScreenModel.title}, Items: ${homeScreenModel.contents.size}\n", CYAN)
             }
+            if (provider.pagerList != null) {
+                log("\n\n========== pagerList ==========\nFetching pagerList\n", BLUE)
+                log("Pager: ${provider.pagerList}", PURPLE)
+            }
         }
         return response
     }
@@ -51,6 +55,12 @@ class ProviderTester(private val provider: RemoteRepo) {
         log("\n\n========== testGetDetailScreenItems ==========\nFetching detail screen items for ID: $id, isSeries: $isSeries\n", BLUE)
         val response = provider.getDetailScreenItems(id, isSeries)
         log("Response: $response\n", GREEN)
+
+        if (isSeries) {
+            log("\n\n========== seriesList ==========\nFetching series-episodes items for ID: $id, isSeries: $isSeries\n", BLUE)
+            log("Series: ${provider.seriesList}\n", PURPLE)
+        }
+
         return response
     }
 
