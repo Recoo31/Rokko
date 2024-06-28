@@ -129,6 +129,7 @@ fun DetailScreen(
                 } else {
                     val intent = Intent(context, PlayerActivity::class.java)
                     context.startActivity(intent)
+                    viewModel.clearClickedItem()
                 }
             }
         }

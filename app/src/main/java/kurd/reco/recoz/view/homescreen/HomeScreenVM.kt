@@ -59,4 +59,8 @@ class HomeScreenVM(private val pluginManager: PluginManager): ViewModel() {
             }
         }
     }
+
+    fun clearClickedItem() {
+        clickedItem.value = Resource.Loading
+    }
 }

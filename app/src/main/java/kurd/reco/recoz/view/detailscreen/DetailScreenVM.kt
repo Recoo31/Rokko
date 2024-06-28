@@ -50,4 +50,8 @@ class DetailScreenVM(private val pluginManager: PluginManager) : ViewModel() {
             }
         }
     }
+
+    fun clearClickedItem() {
+        _clickedItem.value = Resource.Loading
+    }
 }

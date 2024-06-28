@@ -112,6 +112,7 @@ fun HomeScreen(movieList: List<HomeScreenModel>, viewModel: HomeScreenVM, naviga
             mainVM.playDataModel = playData
             val intent = Intent(context, PlayerActivity::class.java)
             context.startActivity(intent)
+            viewModel.clearClickedItem()
         }
         is Resource.Failure -> {
             LaunchedEffect(resource) {

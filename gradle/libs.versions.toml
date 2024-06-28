@@ -19,7 +19,7 @@ koinAndroidxCompose = "3.5.6"
 appcompat = "1.6.1"
 material = "1.12.0"
 media3Exoplayer = "1.3.1"
-rokko-api = "dc18e0a4f6"
+rokko-api = "1.6"
 roomRuntime = "2.6.1"
 
 [libraries]
