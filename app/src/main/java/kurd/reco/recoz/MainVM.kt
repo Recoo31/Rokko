@@ -15,10 +15,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kurd.reco.api.app
 import kurd.reco.api.model.PlayDataModel
-import kurd.reco.recoz.plugin.DeletedPlugin
-import kurd.reco.recoz.plugin.DeletedPluginDao
-import kurd.reco.recoz.plugin.Plugin
-import kurd.reco.recoz.plugin.PluginDao
+import kurd.reco.recoz.db.plugin.DeletedPlugin
+import kurd.reco.recoz.db.plugin.DeletedPluginDao
+import kurd.reco.recoz.db.plugin.Plugin
+import kurd.reco.recoz.db.plugin.PluginDao
 import kurd.reco.recoz.view.settings.plugin.downloadPlugins
 import java.io.File
 import java.io.FileOutputStream

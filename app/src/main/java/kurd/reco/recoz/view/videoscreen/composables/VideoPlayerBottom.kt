@@ -36,13 +36,13 @@ fun VideoPlayerBottom(
             .padding(16.dp)
             .fillMaxWidth()
     ) {
-        IconButton(onClick = { if (exoPlayer.isPlaying) exoPlayer.pause() else exoPlayer.play() }) {
-            Icon(
-                painter = painterResource(id = if (exoPlayer.isPlaying) R.drawable.round_pause_24 else R.drawable.round_play_arrow_24),
-                contentDescription = null,
-                tint = Color.White
-            )
-        }
+//        IconButton(onClick = { if (exoPlayer.isPlaying) exoPlayer.pause() else exoPlayer.play() }) {
+//            Icon(
+//                painter = painterResource(id = if (exoPlayer.isPlaying) R.drawable.round_pause_24 else R.drawable.round_play_arrow_24),
+//                contentDescription = null,
+//                tint = Color.White
+//            )
+//        }
         Text(
             text = "${formatTime(currentTime)} / ${formatTime(duration)}",
             color = Color.White,

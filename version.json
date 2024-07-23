@@ -1,8 +1,9 @@
 {
-  "version": 1.6,
-  "downloadUrl": "https://github.com/Recoo31/Rokko/releases/download/1.6/app-release.apk",
+  "version": 1.7,
+  "downloadUrl": "https://github.com/Recoo31/Rokko/releases/download/1.7/app-release.apk",
   "changeLog": [
-    "New UI",
-    "TV Support"
+    "Added Favorite",
+    "New settings",
+    "Fixed some bug"
   ]
 }

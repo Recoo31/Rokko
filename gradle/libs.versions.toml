@@ -1,5 +1,5 @@
 [versions]
-agp = "8.5.0-alpha05"
+agp = "8.5.1"
 colorpickerCompose = "1.0.9"
 datastorePreferences = "1.1.1"
 destinationsCore = "2.1.0-beta03"

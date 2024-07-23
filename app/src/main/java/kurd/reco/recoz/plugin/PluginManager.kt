@@ -11,13 +11,20 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kurd.reco.api.RemoteRepo
 import kurd.reco.api.app
+import kurd.reco.recoz.db.plugin.DeletedPluginDao
+import kurd.reco.recoz.db.plugin.Plugin
+import kurd.reco.recoz.db.plugin.PluginDao
 import kurd.reco.recoz.view.settings.logs.AppLog
 import kurd.reco.recoz.view.settings.plugin.extractDexFileFromZip
 
-class PluginManager(private val pluginDao: PluginDao, private val deletedPlugin: DeletedPluginDao, private val context: Context) : ViewModel() {
+class PluginManager(
+    private val pluginDao: PluginDao,
+    private val deletedPlugin: DeletedPluginDao,
+    private val context: Context
+) : ViewModel() {
     private var pluginInstance: RemoteRepo? = null
     private val outputDir = context.filesDir.path
-    private val selectedPluginId = MutableStateFlow<Plugin?>(null)
+    val selectedPluginId = MutableStateFlow<Plugin?>(null)
 
     init {
         try {
@@ -28,7 +35,10 @@ class PluginManager(private val pluginDao: PluginDao, private val deletedPlugin:
             selectedPluginId.value = getLastSelectedPlugin()
         } catch (t: Throwable) {
             t.printStackTrace()
-            AppLog.e("PluginManager", "Error loading plugins: ${t.localizedMessage ?: "Unknown error"}")
+            AppLog.e(
+                "PluginManager",
+                "Error loading plugins: ${t.localizedMessage ?: "Unknown error"}"
+            )
         }
 //        val plugin = Plugin(
 //            id = "tvplus",
@@ -55,16 +65,24 @@ class PluginManager(private val pluginDao: PluginDao, private val deletedPlugin:
                         checkUpdate(plugin, pluginDao, remotePlugins)
                     }
 
-                    checkAndDownloadNewPlugins(url, remotePlugins, pluginDao, deletedPlugin, outputDir)
+                    checkAndDownloadNewPlugins(
+                        url,
+                        remotePlugins,
+                        pluginDao,
+                        deletedPlugin,
+                        outputDir
+                    )
                 }
             }
         }
     }
 
-    fun selectPlugin(plugin: Plugin) {
+    fun selectPlugin(pluginID: String) {
         pluginDao.clearSelectedPlugin()
-        AppLog.d("PluginManager", "selectPlugin: ${plugin.id}")
-        pluginDao.selectPlugin(plugin.id)
+        AppLog.d("PluginManager", "selectPlugin: $pluginID")
+        pluginDao.selectPlugin(pluginID)
+
+        val plugin = pluginDao.getPluginById(pluginID) ?: return
         pluginInstance = loadPlugin(plugin)
         selectedPluginId.value = plugin
     }

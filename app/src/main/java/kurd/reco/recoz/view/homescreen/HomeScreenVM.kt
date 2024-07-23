@@ -1,5 +1,8 @@
 package kurd.reco.recoz.view.homescreen
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -9,6 +12,7 @@ import kurd.reco.api.Resource
 import kurd.reco.api.model.HomeItemModel
 import kurd.reco.api.model.HomeScreenModel
 import kurd.reco.api.model.PlayDataModel
+import kurd.reco.recoz.db.plugin.Plugin
 import kurd.reco.recoz.plugin.PluginManager
 import kurd.reco.recoz.view.settings.logs.AppLog
 
@@ -20,6 +24,8 @@ class HomeScreenVM(private val pluginManager: PluginManager): ViewModel() {
         private set
 
     private val TAG = "HomeScreenVM"
+
+    var plugin by mutableStateOf<Plugin?>(null)
 
 //    val pagerList by lazy {
 //        pluginManager.getSelectedPlugin().pagerList

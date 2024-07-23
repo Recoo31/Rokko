@@ -5,8 +5,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import kurd.reco.recoz.db.plugin.Plugin
 import kurd.reco.recoz.focusScale
-import kurd.reco.recoz.plugin.Plugin
 
 @Composable
 fun ConfirmDeleteDialog(plugin: Plugin, onDeleteConfirmed: () -> Unit, onDismiss: () -> Unit) {

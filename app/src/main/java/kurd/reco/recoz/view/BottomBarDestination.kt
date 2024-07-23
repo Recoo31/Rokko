@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
@@ -19,6 +20,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.generated.NavGraphs
+import com.ramcosta.composedestinations.generated.destinations.FavoritesScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.HomeScreenRootDestination
 import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SettingsScreenDestination
@@ -41,6 +43,11 @@ enum class NavigationBarDestination(
         direction = SearchScreenDestination,
         icon = Icons.Default.Search,
         label = "Search"
+    ),
+    Favorite(
+        direction = FavoritesScreenDestination,
+        icon = Icons.Default.FavoriteBorder,
+        label = "Favorite"
     ),
     Settings(
         direction = SettingsScreenDestination,

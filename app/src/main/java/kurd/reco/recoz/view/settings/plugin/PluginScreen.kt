@@ -29,8 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import kurd.reco.recoz.MainVM
+import kurd.reco.recoz.db.plugin.Plugin
 import kurd.reco.recoz.focusScale
-import kurd.reco.recoz.plugin.Plugin
 import kurd.reco.recoz.plugin.PluginManager
 import org.koin.androidx.compose.koinViewModel
 
@@ -105,7 +105,7 @@ fun PluginDialog(
                                     pluginToDelete = plugin
                                 } else {
                                     onDismiss()
-                                    pluginManager.selectPlugin(plugin)
+                                    pluginManager.selectPlugin(plugin.id)
                                 }
                             },
                             modifier = Modifier

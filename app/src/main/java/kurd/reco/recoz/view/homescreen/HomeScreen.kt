@@ -58,7 +58,7 @@ fun HomeScreenRoot(navigator: DestinationsNavigator) {
     var errorText by remember { mutableStateOf("") }
     val pluginManager: PluginManager = koinInject()
     val lastPlugin by pluginManager.getSelectedPluginFlow().collectAsState()
-    var plugin by remember { mutableStateOf(lastPlugin) }
+    var plugin = viewModel.plugin
 
     LaunchedEffect(lastPlugin) {
         if (plugin?.id != lastPlugin?.id) {

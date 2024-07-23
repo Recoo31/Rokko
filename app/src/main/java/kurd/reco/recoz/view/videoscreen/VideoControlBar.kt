@@ -26,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
@@ -43,6 +44,7 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
+import androidx.media3.common.text.Cue
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
@@ -51,18 +53,21 @@ import androidx.media3.ui.CaptionStyleCompat
 import androidx.media3.ui.PlayerView
 import kotlinx.coroutines.delay
 import kurd.reco.api.model.PlayDataModel
+import kurd.reco.recoz.view.settings.SettingsDataStore
 import kurd.reco.recoz.view.settings.logs.AppLog
 import kurd.reco.recoz.view.videoscreen.composables.GestureAdjuster
 import kurd.reco.recoz.view.videoscreen.composables.SettingsDialog
 import kurd.reco.recoz.view.videoscreen.composables.VideoPlayerBottom
 import kurd.reco.recoz.view.videoscreen.composables.VideoSeekControls
+import org.koin.compose.koinInject
 
 @OptIn(UnstableApi::class)
 @Composable
 fun VideoControlBar(
     exoPlayer: ExoPlayer,
     item: PlayDataModel,
-    trackSelector: DefaultTrackSelector
+    trackSelector: DefaultTrackSelector,
+    settingsDataStore: SettingsDataStore = koinInject()
 ) {
     var currentTime by remember { mutableLongStateOf(0L) }
     var duration by remember { mutableLongStateOf(exoPlayer.duration) }
@@ -72,6 +77,7 @@ fun VideoControlBar(
     val context = LocalContext.current
     val TAG = "VideoControlBar"
     var _resizeMode by remember { mutableIntStateOf(AspectRatioFrameLayout.RESIZE_MODE_ZOOM) }
+    val subtitleSize by settingsDataStore.subtitleSize.collectAsState(initial = 16f)
 
     LaunchedEffect(exoPlayer) {
         val listener = object : Player.Listener {
@@ -123,6 +129,7 @@ fun VideoControlBar(
                     layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
                     subtitleView?.apply {
                         setPadding(0, 0, 0, bottomPadding)
+                        setFixedTextSize(Cue.TEXT_SIZE_TYPE_ABSOLUTE, subtitleSize)
                         this.setStyle(
                             CaptionStyleCompat(
                                 Color.White.toArgb(),
@@ -140,6 +147,7 @@ fun VideoControlBar(
                 it.resizeMode = _resizeMode
                 it.subtitleView?.apply {
                     setPadding(0, 0, 0, bottomPadding)
+                    setFixedTextSize(Cue.TEXT_SIZE_TYPE_ABSOLUTE, subtitleSize)
                     this.setStyle(
                         CaptionStyleCompat(
                             Color.White.toArgb(),

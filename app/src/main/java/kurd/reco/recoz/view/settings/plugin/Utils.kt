@@ -2,8 +2,8 @@ package kurd.reco.recoz.view.settings.plugin
 
 import android.content.Context
 import kurd.reco.api.app
-import kurd.reco.recoz.plugin.Plugin
-import kurd.reco.recoz.plugin.PluginDao
+import kurd.reco.recoz.db.plugin.Plugin
+import kurd.reco.recoz.db.plugin.PluginDao
 import kurd.reco.recoz.plugin.PluginResponseRoot
 import kurd.reco.recoz.plugin.downloadPlugin
 import kurd.reco.recoz.plugin.getPluginFromManifest

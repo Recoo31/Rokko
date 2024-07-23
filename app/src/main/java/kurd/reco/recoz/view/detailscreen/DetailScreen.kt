@@ -10,6 +10,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -36,6 +38,9 @@ import kurd.reco.api.Resource
 import kurd.reco.api.model.DetailScreenModel
 import kurd.reco.recoz.MainVM
 import kurd.reco.recoz.PlayerActivity
+import kurd.reco.recoz.db.favorite.Favorite
+import kurd.reco.recoz.db.favorite.FavoriteDao
+import kurd.reco.recoz.db.plugin.PluginDao
 import kurd.reco.recoz.focusScale
 import kurd.reco.recoz.view.detailscreen.composables.BackImage
 import kurd.reco.recoz.view.detailscreen.composables.CustomIconButton
@@ -75,7 +80,7 @@ fun DetailScreenRoot(
     ) {
         when (val resource = item) {
             is Resource.Loading -> LoadingBar()
-            is Resource.Success -> DetailScreen(resource.value, viewModel, navigator)
+            is Resource.Success -> DetailScreen(id, resource.value, viewModel, navigator)
             is Resource.Failure -> {
                 LaunchedEffect(resource) {
                     isError = true
@@ -94,9 +99,12 @@ fun DetailScreenRoot(
 
 @Composable
 fun DetailScreen(
+    homeID: String,
     item: DetailScreenModel,
     viewModel: DetailScreenVM,
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    pluginDao: PluginDao = koinInject(),
+    favoriteDao: FavoriteDao = koinInject()
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedSeason by rememberSaveable { mutableIntStateOf(0) }
@@ -133,12 +141,14 @@ fun DetailScreen(
                 }
             }
         }
+
         is Resource.Failure -> {
             LaunchedEffect(resource) {
                 isError = true
                 errorText = resource.error
             }
         }
+
         is Resource.Loading -> Unit
     }
 
@@ -209,5 +219,35 @@ fun DetailScreen(
                 .align(Alignment.TopStart)
                 .padding(8.dp)
         ) { navigator.navigateUp() }
+
+        val favoriteIcon = favoriteDao.getFavoriteById(homeID) != null
+        var isFavorite by remember { mutableStateOf(favoriteIcon) }
+
+        CustomIconButton(
+            icon = {
+                Icon(
+                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
+                    contentDescription = "Favorite"
+                )
+            },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(8.dp)
+        ) {
+            if (isFavorite) {
+                favoriteDao.deleteFavoriteById(homeID)
+            } else {
+                favoriteDao.insertFavorite(
+                    Favorite(
+                        id = homeID,
+                        title = item.title,
+                        image = item.image,
+                        isSeries = item.isSeries,
+                        pluginID = pluginDao.getSelectedPlugin()!!.id
+                    )
+                )
+            }
+            isFavorite = !isFavorite
+        }
     }
 }

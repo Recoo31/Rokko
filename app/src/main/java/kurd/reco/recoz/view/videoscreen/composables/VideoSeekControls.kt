@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -28,6 +29,8 @@ import kurd.reco.recoz.R
 fun VideoSeekControls(exoPlayer: ExoPlayer) {
     var isRewinding by remember { mutableStateOf(false) }
     var isForwarding by remember { mutableStateOf(false) }
+
+    val pauseIcon = if (exoPlayer.isPlaying) R.drawable.round_pause_24 else R.drawable.round_play_arrow_24
 
     val rewindScale by animateFloatAsState(
         targetValue = if (isRewinding) 1.2f else 1f,
@@ -57,7 +60,16 @@ fun VideoSeekControls(exoPlayer: ExoPlayer) {
             )
         }
 
-        Spacer(modifier = Modifier.padding(horizontal = 72.dp))
+        Spacer(modifier = Modifier.padding(horizontal = 50.dp))
+
+        IconButton(
+            onClick = { if (exoPlayer.isPlaying) exoPlayer.pause() else exoPlayer.play() },
+            modifier = Modifier.size(50.dp)
+        ) {
+            Icon(painter = painterResource(id = pauseIcon), contentDescription = "Pause/Play")
+        }
+
+        Spacer(modifier = Modifier.padding(horizontal = 50.dp))
 
         IconButton(
             onClick = {

@@ -15,6 +15,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -109,5 +110,57 @@ fun SettingItem(
             }
         }
 
+    }
+}
+
+@Composable
+fun SettingSliderItem(
+    icon: ImageVector,
+    title: String,
+    description: String?,
+    value: Float,
+    valueRange: ClosedFloatingPointRange<Float>,
+    steps: Int = 0,
+    onValueChange: (Float) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    OutlinedCard(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .focusScale(),
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(icon, contentDescription = null, modifier = Modifier.size(32.dp))
+                Spacer(modifier = Modifier.width(16.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(text = title, fontWeight = FontWeight.Medium, fontSize = 16.sp)
+                    description?.let {
+                        Text(text = it, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+                    }
+                }
+            }
+            Slider(
+                value = value,
+                onValueChange = onValueChange,
+                valueRange = valueRange,
+                steps = steps,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Text(
+                text = "${value.toInt()}",
+                modifier = Modifier.align(Alignment.End)
+            )
+        }
     }
 }

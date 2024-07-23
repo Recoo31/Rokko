@@ -3,6 +3,9 @@ package kurd.reco.recoz.plugin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kurd.reco.api.app
+import kurd.reco.recoz.db.plugin.DeletedPluginDao
+import kurd.reco.recoz.db.plugin.Plugin
+import kurd.reco.recoz.db.plugin.PluginDao
 import kurd.reco.recoz.view.settings.logs.AppLog
 import org.json.JSONObject
 import java.io.File

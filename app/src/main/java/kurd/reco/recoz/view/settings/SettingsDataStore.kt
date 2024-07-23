@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -17,6 +18,7 @@ class SettingsDataStore(private val context: Context) {
         val DARK_THEME_ENABLED = booleanPreferencesKey("dark_theme_enabled")
         val MATERIAL_THEME_ENABLED = booleanPreferencesKey("material_theme_enabled")
         val EXTERNAL_PLAYER = stringPreferencesKey("external_player")
+        val SUBTITLE_SIZE = floatPreferencesKey("subtitle_size")
     }
 
     private fun <T> savePreference(key: Preferences.Key<T>, value: T) {
@@ -52,5 +54,14 @@ class SettingsDataStore(private val context: Context) {
 
     fun setExternalPlayer(player: String) {
         savePreference(EXTERNAL_PLAYER, player)
+    }
+
+    val subtitleSize: Flow<Float> = context.dataStore.data
+        .map {
+            it[SUBTITLE_SIZE] ?: 12f
+        }
+
+    fun setSubtitleSize(size: Float) {
+        savePreference(SUBTITLE_SIZE, size)
     }
 }

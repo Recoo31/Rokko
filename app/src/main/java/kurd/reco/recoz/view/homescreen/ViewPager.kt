@@ -36,7 +36,6 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kurd.reco.api.model.HomeItemModel
-import kurd.reco.recoz.focusScale
 
 @Composable
 fun ViewPager(
@@ -84,7 +83,6 @@ fun ViewPager(
                     .padding(8.dp)
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .focusScale()
                     .graphicsLayer {
                         val pageOffset =
                             (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
@@ -112,7 +110,7 @@ fun ViewPager(
                         .align(Alignment.BottomCenter)
                         .padding(48.dp),
                 ) {
-                    Text(text = "Watch Now", modifier = Modifier.focusScale())
+                    Text(text = "Watch Now")
                 }
             }
         }

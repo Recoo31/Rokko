@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -70,6 +71,8 @@ fun SearchScreen(navigator: DestinationsNavigator) {
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
                     cursorColor = MaterialTheme.colorScheme.primary,
+                    focusedContainerColor = MaterialTheme.colorScheme.background,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.background
                 ),
                 placeholder = { Text(text = "Search") },
                 shape = RoundedCornerShape(size = 32.dp),
@@ -90,7 +93,10 @@ fun SearchScreen(navigator: DestinationsNavigator) {
                     }
                 }
             )
-            HorizontalDivider(Modifier.padding(8.dp))
+
+            val dividerColor = if (query.isNotEmpty()) MaterialTheme.colorScheme.primary else DividerDefaults.color
+
+            HorizontalDivider(Modifier.padding(8.dp), thickness = 3.dp, color = dividerColor)
 
             if (viewModel.searchList.isNotEmpty()) {
                 isLoading = false
@@ -104,14 +110,18 @@ fun SearchScreen(navigator: DestinationsNavigator) {
             LazyColumn {
                 items(viewModel.searchList) {
                     SearchItem(it) {
-                        navigator.navigate(DetailScreenRootDestination(it.id.toString(), it.isSeries))
+                        navigator.navigate(
+                            DetailScreenRootDestination(
+                                it.id.toString(),
+                                it.isSeries
+                            )
+                        )
                     }
                 }
             }
         }
 
     }
-
 }
 
 @Composable
@@ -125,7 +135,7 @@ fun SearchItem(
             onCLick()
         }
     ) {
-        Column(Modifier.padding(horizontal = 8.dp)){
+        Column(Modifier.padding(horizontal = 8.dp)) {
             Text(
                 item.title,
                 modifier = Modifier
@@ -140,6 +150,7 @@ fun SearchItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(16f / 9f)
+                    .padding(bottom = 8.dp)
                     .clip(RoundedCornerShape(8.dp)),
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop

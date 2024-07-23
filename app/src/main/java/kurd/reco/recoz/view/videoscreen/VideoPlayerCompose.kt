@@ -23,21 +23,24 @@ import kurd.reco.api.model.PlayDataModel
 @Composable
 fun VideoPlayerCompose(item: PlayDataModel) {
     val context = LocalContext.current
-    val windows = (context as Activity).window
+    val activity = context as Activity
+    val window = activity.window
 
-    val trackSelector = DefaultTrackSelector(context).apply {
-        setParameters(
-            buildUponParameters()
-                .setAllowVideoMixedMimeTypeAdaptiveness(true)
-                .setAllowVideoNonSeamlessAdaptiveness(true)
-                .setSelectUndeterminedTextLanguage(true)
-                .setAllowAudioMixedMimeTypeAdaptiveness(true)
-                .setAllowMultipleAdaptiveSelections(true)
-                .setPreferredTextRoleFlags(C.ROLE_FLAG_SUBTITLE)
-        )
+    val trackSelector = remember {
+        DefaultTrackSelector(context).apply {
+            setParameters(
+                buildUponParameters()
+                    .setAllowVideoMixedMimeTypeAdaptiveness(true)
+                    .setAllowVideoNonSeamlessAdaptiveness(true)
+                    .setSelectUndeterminedTextLanguage(true)
+                    .setAllowAudioMixedMimeTypeAdaptiveness(true)
+                    .setAllowMultipleAdaptiveSelections(true)
+                    .setPreferredTextRoleFlags(C.ROLE_FLAG_SUBTITLE)
+            )
+        }
     }
 
-    hideSystemBars(windows)
+    hideSystemBars(window)
 
     val exoPlayer = remember {
         ExoPlayer.Builder(context)
@@ -45,8 +48,7 @@ fun VideoPlayerCompose(item: PlayDataModel) {
             .run {
                 if (item.streamHeaders != null) {
                     val httpDataSourceFactory = createHttpDataSourceFactory(item.streamHeaders!!)
-                    val dataSourceFactory =
-                        DefaultDataSource.Factory(context, httpDataSourceFactory)
+                    val dataSourceFactory = DefaultDataSource.Factory(context, httpDataSourceFactory)
                     setMediaSourceFactory(DefaultMediaSourceFactory(dataSourceFactory))
                 } else this
             }
@@ -61,15 +63,13 @@ fun VideoPlayerCompose(item: PlayDataModel) {
 
     var oldOrientation by rememberSaveable { mutableIntStateOf(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) }
 
-    DisposableEffect(
-        context.apply {
-            oldOrientation = requestedOrientation
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        }
-    ) {
+    DisposableEffect(Unit) {
+        oldOrientation = activity.requestedOrientation
+        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+
         onDispose {
             exoPlayer.release()
-            context.requestedOrientation = oldOrientation
+            activity.requestedOrientation = oldOrientation
         }
     }
 

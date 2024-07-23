@@ -1,4 +1,4 @@
-package kurd.reco.recoz.plugin
+package kurd.reco.recoz.db.plugin
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

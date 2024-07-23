@@ -9,7 +9,6 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.annotation.OptIn
-import androidx.compose.runtime.Composable
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.C
@@ -54,14 +53,12 @@ fun createMediaItem(item: PlayDataModel, url: String): MediaItem {
 }
 
 fun createDrmConfiguration(drm: DrmDataModel): MediaItem.DrmConfiguration {
-    return MediaItem.DrmConfiguration.Builder(C.WIDEVINE_UUID)
-        .setLicenseUri(drm.licenseUrl)
-        .apply {
-            if (drm.headers != null) {
-                setLicenseRequestHeaders(drm.headers!!)
-            }
+    return MediaItem.DrmConfiguration.Builder(C.WIDEVINE_UUID).apply {
+        setLicenseUri(drm.licenseUrl)
+        if (drm.headers != null) {
+            setLicenseRequestHeaders(drm.headers!!)
         }
-        .build()
+    }.build()
 }
 
 fun setSubtitle(item: SubtitleDataModel): MediaItem.SubtitleConfiguration {
@@ -97,12 +94,11 @@ fun TrackGroup.getName(trackType: @C.TrackType Int, index: Int): String {
     }
 }
 
-@Composable
-fun formatTime(ms: Long): String {
+fun formatTime(ms: Long, locale: Locale = Locale.getDefault()): String {
     val totalSeconds = ms / 1000
     val minutes = totalSeconds / 60
     val seconds = totalSeconds % 60
-    return "$minutes:$seconds"
+    return String.format(locale, "%02d:%02d", minutes, seconds)
 }
 
 fun hideSystemBars(window: Window) {
