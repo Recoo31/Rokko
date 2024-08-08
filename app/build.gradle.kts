@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "kurd.reco.recoz"
-        minSdk = 24
+        minSdk = 22
         targetSdk = 34
         versionCode = 2
         versionName = "1.7"
