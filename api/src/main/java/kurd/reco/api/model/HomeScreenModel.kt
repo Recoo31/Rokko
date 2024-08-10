@@ -7,6 +7,7 @@ data class HomeScreenModel(
 
 data class HomeItemModel(
     val id: Any,
+    val title: String?,
     val poster: String,
     val isSeries: Boolean,
     val isLiveTv: Boolean
